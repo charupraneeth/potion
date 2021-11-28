@@ -1,0 +1,45 @@
+.main {
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.todos-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  caret-color: rgb(55, 53, 47);
+  margin-bottom: 1rem;
+}
+
+.todos-description {
+  margin: 1rem 0;
+}
+
+.todo-group {
+  width: 260px;
+}
+
+.todo {
+  padding: 0.5rem;
+
+  min-height: 40px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  border-radius: 3px;
+  box-shadow: rgba(15, 15, 15, 0.1) 0px 0px 0px 1px,
+    rgba(15, 15, 15, 0.1) 0px 2px 4px;
+  transition: background 100ms ease-out 0s;
+  &:hover {
+    background: whitesmoke;
+  }
+}
+
+.editable {
+  max-width: 100%;
+  white-space: pre-wrap;
+  word-break: break-word;
+  outline: 0;
+  user-select: auto;
+}
+.draggable.dragging {
+  opacity: 1;
+}
