@@ -1,7 +1,11 @@
 import React, { useState } from "react";
+import { TodoType } from "../@types";
 
-export const InputModal = ({ content }) => {
-  const [newContent, setNewContent] = useState(content);
+interface Props {
+  todo: TodoType;
+}
+export const InputModal: React.FC<Props> = ({ todo }) => {
+  const [newContent, setNewContent] = useState(todo.content);
   function handleInput(event: React.KeyboardEvent) {
     // @ts-ignore
     const updatedContent = event.target?.textContent;
