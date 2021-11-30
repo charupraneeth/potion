@@ -3,6 +3,7 @@ import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { TodoType } from "../@types";
 import { StoreModel } from "../store";
+import { DeleteTodo } from "./DeleteTodo";
 
 interface Props {
   todo: TodoType;
@@ -29,6 +30,7 @@ export const Todo: React.FC<Props> = ({ todo, index }) => {
           onClick={handleModal}
         >
           {todo.content}
+          <DeleteTodo todoId={todo.id} />
         </div>
       )}
     </Draggable>

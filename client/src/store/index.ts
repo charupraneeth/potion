@@ -18,6 +18,8 @@ export interface StoreModel {
   reorderTodos: Action<StoreModel, ReorderPayload>;
   editTodo: Action<StoreModel, EditPayload>;
   setSelectedTodo: Action<StoreModel, TodoType | null>;
+  addTodo: Action<StoreModel, TodoType>;
+  deleteTodo: Action<StoreModel, string>;
 }
 
 const model: StoreModel = {
@@ -50,8 +52,19 @@ const model: StoreModel = {
       content: todoContent,
     });
   }),
+
   setSelectedTodo: action((state, payload) => {
     state.selectedTodo = payload;
+  }),
+
+  addTodo: action((state, payload) => {
+    state.todos.set(payload.id, payload);
+  }),
+
+  deleteTodo: action((state, payload) => {
+    console.log("deleted");
+
+    state.todos.delete(payload);
   }),
 };
 

@@ -20,6 +20,7 @@
   min-width: 300px;
   white-space: pre-wrap;
   border-radius: 3px;
+  position: relative;
 }
 
 .input-modal-content {
@@ -27,4 +28,11 @@
   max-width: 100%;
   word-break: break-all;
   outline: 0;
+}
+.delete-todo {
+  position: absolute;
+  top: -30px;
+  right: 10px;
+  width: 20px;
+  cursor: pointer;
 }

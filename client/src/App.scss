@@ -27,8 +27,9 @@
 }
 
 .todo {
+  position: relative;
+  word-break: break-all;
   padding: 0.5rem;
-  user-select: none;
   min-height: 40px;
   margin-bottom: 5px;
   cursor: pointer;
@@ -40,9 +41,32 @@
   &:hover {
     background: whitesmoke;
   }
+  &:hover .delete-todo {
+    display: block;
+  }
+
   &:focus {
     background: blue;
   }
+}
+
+.todo .delete-todo {
+  z-index: 100;
+  top: 5px;
+  right: 5px;
+  position: absolute;
+  width: 20px;
+  height: 30px;
+  display: none;
+  fill: inherit;
+  flex-shrink: 0;
+  backface-visibility: hidden;
+  background: whitesmoke;
+  cursor: pointer;
+}
+
+[contenteditable="true"]:empty:before {
+  content: "Enter your text here";
 }
 
 .editable {
@@ -51,4 +75,13 @@
   word-break: break-word;
   outline: 0;
   user-select: auto;
+}
+
+@media screen and (max-width: 640px) {
+  .todo:hover .delete-todo {
+    display: none;
+  }
+  .todo .delete-todo {
+    display: none;
+  }
 }

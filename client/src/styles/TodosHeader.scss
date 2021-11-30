@@ -1,0 +1,23 @@
+.todos-header {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.25rem 0;
+  padding: 10px 0;
+  align-items: center;
+
+  &:hover .plus {
+    opacity: 1;
+  }
+}
+
+.plus {
+  cursor: pointer;
+  opacity: 0;
+  width: 14px;
+  height: 14px;
+  display: block;
+  fill: rgba(55, 53, 47, 0.4);
+  flex-shrink: 0;
+  backface-visibility: hidden;
+  transition: opacity 100ms ease;
+}

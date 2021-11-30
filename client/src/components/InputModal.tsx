@@ -1,7 +1,8 @@
 import { Actions, useStoreActions, useStoreState } from "easy-peasy";
 import React, { useEffect, useRef } from "react";
 import { StoreModel } from "../store";
-import "./InputModal.scss";
+import "../styles/InputModal.scss";
+import { DeleteTodo } from "./DeleteTodo";
 
 export const InputModal: React.FC = () => {
   const contentEl = useRef(null);
@@ -43,15 +44,18 @@ export const InputModal: React.FC = () => {
   return (
     <div className="input-modal-overlay" onClick={handleOverlayClick}>
       <div className="input-modal">
-        <div
-          ref={contentEl}
-          className="input-modal-content"
-          contentEditable="true"
-          onKeyUp={handleInput}
-          suppressContentEditableWarning={true}
-        >
-          {todo?.content}
-        </div>
+        {todo?.id && <DeleteTodo todoId={todo.id} />}
+        {todo?.id && (
+          <div
+            ref={contentEl}
+            className="input-modal-content"
+            contentEditable="true"
+            onKeyUp={handleInput}
+            suppressContentEditableWarning={true}
+          >
+            {todo?.content}
+          </div>
+        )}
       </div>
     </div>
   );

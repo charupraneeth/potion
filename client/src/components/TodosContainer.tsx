@@ -1,6 +1,7 @@
 import { useStoreState } from "easy-peasy";
 import { Droppable } from "react-beautiful-dnd";
 import { StoreModel } from "../store";
+import { TodosHeader } from "./TodosHeader";
 import { Todo } from "./Todo";
 
 const TodosContainer: React.FC = () => {
@@ -15,10 +16,13 @@ const TodosContainer: React.FC = () => {
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
-            {[...todos.entries()].map((entry, index) => {
-              const todo = entry[1];
-              return <Todo key={todo.id} todo={todo} index={index} />;
-            })}
+            <TodosHeader />
+            <div className="todos-wrap">
+              {[...todos.entries()].map((entry, index) => {
+                const todo = entry[1];
+                return <Todo key={todo.id} todo={todo} index={index} />;
+              })}
+            </div>
             {provided.placeholder}
           </div>
         </>
