@@ -1,8 +1,30 @@
 .input-modal-overlay {
   position: absolute;
-  height: 100vh;
-  width: 100vh;
+  height: 100%;
+  width: 100%;
   top: 0;
   left: 0;
-  background: whitesmoke;
+  background: rgba(245, 245, 245, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.input-modal {
+  outline: 0;
+  background: white;
+  box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px,
+    rgba(15, 15, 15, 0.1) 0px 5px 10px, rgba(15, 15, 15, 0.2) 0px 15px 40px;
+  z-index: 100;
+  max-width: 300px;
+  min-width: 300px;
+  white-space: pre-wrap;
+  border-radius: 3px;
+}
+
+.input-modal-content {
+  padding: 1rem;
+  max-width: 100%;
+  word-break: break-all;
+  outline: 0;
 }

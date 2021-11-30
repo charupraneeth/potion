@@ -1,6 +1,14 @@
+// .main {
+//   max-width: 300px;
+//   margin: 0 auto;
+// }
 .main {
+  padding: 0 2rem;
+  min-height: 100vh;
+  position: relative;
+}
+.todos-container {
   max-width: 300px;
-  margin: 0 auto;
 }
 
 .todos-title {
@@ -32,6 +40,9 @@
   &:hover {
     background: whitesmoke;
   }
+  &:focus {
+    background: blue;
+  }
 }
 
 .editable {
@@ -40,12 +51,4 @@
   word-break: break-word;
   outline: 0;
   user-select: auto;
-}
-
-.quote-item {
-  width: 200px;
-  border: 1px solid grey;
-  margin-bottom: 8px;
-  background-color: lightblue;
-  padding: 8px;
 }
