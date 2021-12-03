@@ -5,8 +5,8 @@ import { StoreModel } from "../store";
 import "../styles/TodosHeader.scss";
 export const TodosHeader: React.FC = ({}) => {
   const todos = useStoreState((state: StoreModel) => state.todos);
-  const addTodo = useStoreActions(
-    (actions: Actions<StoreModel>) => actions.addTodo
+  const addOrEditTodo = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.addOrEditTodo
   );
   const reorderTodos = useStoreActions(
     (actions: Actions<StoreModel>) => actions.reorderTodos
@@ -15,7 +15,7 @@ export const TodosHeader: React.FC = ({}) => {
   function handleAddTodo() {
     const id = Date.now() + "";
     const startIndex = todos.size;
-    addTodo({
+    addOrEditTodo({
       id,
       content: "",
     });

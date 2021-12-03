@@ -23,7 +23,7 @@ export const Todo: React.FC<Props> = ({ todo, index }) => {
     <Draggable draggableId={todo.id} index={index}>
       {(provided) => (
         <div
-          className="todo"
+          className={`todo ${todo.content.length ? "" : "is-empty"}`}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}

@@ -67,6 +67,12 @@
 
 [contenteditable="true"]:empty:before {
   content: "Enter your text here";
+  color: gray;
+}
+
+.todo.is-empty:before {
+  content: "Click to enter text";
+  color: gray;
 }
 
 .editable {

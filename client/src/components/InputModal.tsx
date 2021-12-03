@@ -13,8 +13,8 @@ export const InputModal: React.FC = () => {
     // @ts-ignore
     contentEl.current.focus();
   }, []);
-  const editTodo = useStoreActions(
-    (actions: Actions<StoreModel>) => actions.editTodo
+  const addOrEditTodo = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.addOrEditTodo
   );
 
   const setSelectedTodo = useStoreActions(
@@ -36,9 +36,9 @@ export const InputModal: React.FC = () => {
       alert("no todo ");
       return;
     }
-    editTodo({
-      todoContent: updatedContent,
-      todoId: todo?.id,
+    addOrEditTodo({
+      content: updatedContent,
+      id: todo?.id,
     });
   }
   return (

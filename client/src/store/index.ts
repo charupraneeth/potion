@@ -7,18 +7,12 @@ export type ReorderPayload = {
   endIndex: number;
 };
 
-export type EditPayload = {
-  todoId: string;
-  todoContent: string;
-};
-
 export interface StoreModel {
   selectedTodo: TodoType | null;
   todos: Map<string, TodoType>;
   reorderTodos: Action<StoreModel, ReorderPayload>;
-  editTodo: Action<StoreModel, EditPayload>;
+  addOrEditTodo: Action<StoreModel, TodoType>;
   setSelectedTodo: Action<StoreModel, TodoType | null>;
-  addTodo: Action<StoreModel, TodoType>;
   deleteTodo: Action<StoreModel, string>;
 }
 
@@ -45,25 +39,16 @@ const model: StoreModel = {
     state.todos = new Map(entries);
   }),
 
-  editTodo: action((state, payload) => {
-    const { todoId, todoContent } = payload;
-    state.todos.set(todoId, {
-      id: todoId,
-      content: todoContent,
-    });
+  addOrEditTodo: action((state, payload) => {
+    state.todos.set(payload.id, payload);
   }),
 
   setSelectedTodo: action((state, payload) => {
     state.selectedTodo = payload;
   }),
 
-  addTodo: action((state, payload) => {
-    state.todos.set(payload.id, payload);
-  }),
-
   deleteTodo: action((state, payload) => {
     console.log("deleted");
-
     state.todos.delete(payload);
   }),
 };
