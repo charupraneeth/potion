@@ -10,8 +10,16 @@ export const InputModal: React.FC = () => {
 
   useEffect(() => {
     if (!contentEl.current) return;
+    const el = contentEl.current;
+    const selection = window.getSelection();
+    const range = document.createRange();
+    if (!selection) return;
+    selection.removeAllRanges();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    selection.addRange(range);
     // @ts-ignore
-    contentEl.current.focus();
+    el.focus();
   }, []);
   const addOrEditTodo = useStoreActions(
     (actions: Actions<StoreModel>) => actions.addOrEditTodo

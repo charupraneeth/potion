@@ -65,7 +65,7 @@
   cursor: pointer;
 }
 
-[contenteditable="true"]:empty:before {
+[contenteditable="true"]:empty::after {
   content: "Enter your text here";
   color: gray;
 }
@@ -77,7 +77,7 @@
 
 .editable {
   max-width: 100%;
-  white-space: pre-wrap;
+
   word-break: break-word;
   outline: 0;
   user-select: auto;
