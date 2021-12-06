@@ -13,8 +13,25 @@
   gap: 1rem;
 }
 
+.new-group {
+  margin: 0.5rem 0;
+}
+
+.new-group-btn {
+  padding: 0.25rem;
+  background: rgba(45, 170, 219, 1);
+  color: white;
+  outline: 0;
+  border: 1px solid rgb(55, 53, 47);
+  border-radius: 3px;
+  cursor: pointer;
+  &:hover {
+    background: rgb(18, 138, 185);
+  }
+}
 .todos-container {
   width: 260px;
+  min-width: 260px;
 }
 
 .todos-title {

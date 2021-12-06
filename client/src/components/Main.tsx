@@ -4,16 +4,16 @@ import Description from "../components/Description";
 
 import { StoreModel } from "../store";
 import { Actions, useStoreActions, useStoreState } from "easy-peasy";
-import {
-  DragDropContext,
-  DropResult,
-  ResponderProvided,
-} from "react-beautiful-dnd";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { InputModal } from "./InputModal";
 
 const Main = () => {
   const reorderTodos = useStoreActions(
     (actions: Actions<StoreModel>) => actions.reorderTodos
+  );
+
+  const moveTodos = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.moveTodos
   );
 
   const selectedTodo = useStoreState((state: StoreModel) => state.selectedTodo);
@@ -23,12 +23,19 @@ const Main = () => {
 
     if (!result.destination) return;
     if (result.source.droppableId === result.destination.droppableId) {
-      reorderTodos({
+      if (result.source.index === result.destination.index) return;
+      return reorderTodos({
         startIndex: result.source.index,
         endIndex: result.destination.index,
         categoryId: result.destination.droppableId,
       });
     }
+    moveTodos({
+      sourceIndex: result.source.index,
+      destinationIndex: result.destination.index,
+      destinationId: result.destination.droppableId,
+      sourceId: result.source.droppableId,
+    });
   }
   return (
     <DragDropContext onDragEnd={handleDragEnd}>

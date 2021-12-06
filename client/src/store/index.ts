@@ -9,6 +9,12 @@ export type ReorderPayload = {
   categoryId: string;
 };
 
+type MovePayload = {
+  sourceIndex: number;
+  destinationIndex: number;
+  sourceId: string;
+  destinationId: string;
+};
 type AddOrEditPayload = {
   todo: TodoType;
   categoryId: string;
@@ -22,6 +28,7 @@ type DeletePayload = {
 export interface StoreModel {
   selectedTodo: TodoType | null;
   reorderTodos: Action<StoreModel, ReorderPayload>;
+  moveTodos: Action<StoreModel, MovePayload>;
   addOrEditTodo: Action<StoreModel, TodoType>;
   setSelectedTodo: Action<StoreModel, TodoType | null>;
   deleteTodo: Action<StoreModel, TodoType>;
@@ -34,6 +41,7 @@ export interface StoreModel {
       todos: Map<string, TodoType>;
     };
   };
+  addTodoGroup: Action<StoreModel>;
 }
 
 const model: StoreModel = {
@@ -81,6 +89,21 @@ const model: StoreModel = {
 
     state.allTodos[categoryId].todos = new Map(entries);
   }),
+  moveTodos: action((state, payload) => {
+    const { destinationId, destinationIndex, sourceId, sourceIndex } = payload;
+    const sourceEntries = [...state.allTodos[sourceId].todos.entries()];
+    const destinationEntries = [
+      ...state.allTodos[destinationId].todos.entries(),
+    ];
+
+    const [removed] = sourceEntries.splice(sourceIndex, 1);
+    removed[1].categoryId = destinationId;
+    destinationEntries.splice(destinationIndex, 0, removed);
+    console.log("moved");
+
+    state.allTodos[sourceId].todos = new Map(sourceEntries);
+    state.allTodos[destinationId].todos = new Map(destinationEntries);
+  }),
 
   addOrEditTodo: action((state, payload) => {
     const { categoryId } = payload;
@@ -95,6 +118,13 @@ const model: StoreModel = {
     console.log("deleted");
     const { categoryId, id } = payload;
     state.allTodos[categoryId].todos.delete(id);
+  }),
+  addTodoGroup: action((state) => {
+    const groupId = makeid(10);
+    state.allTodos[groupId] = {
+      category: { id: groupId, name: "" },
+      todos: new Map<string, TodoType>(),
+    };
   }),
 };
 
