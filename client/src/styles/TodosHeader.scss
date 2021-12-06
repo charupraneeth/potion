@@ -5,29 +5,43 @@
   padding: 10px 0;
   align-items: center;
 
-  &:hover .plus {
+  &:hover .action-btns {
     opacity: 1;
   }
+}
+
+.action-btns {
+  width: 60px;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: opacity 100ms ease;
 }
 
 .todo-header-title {
   width: 100%;
 }
 
+.todo-header-remove {
+  .trash-btn {
+    height: 20px;
+    cursor: pointer;
+  }
+}
+
 .plus {
   cursor: pointer;
-  opacity: 0;
   width: 14px;
   height: 14px;
   display: block;
   fill: rgba(55, 53, 47, 0.4);
   flex-shrink: 0;
   backface-visibility: hidden;
-  transition: opacity 100ms ease;
 }
 
 @media screen and (max-width: 760px) {
-  .plus {
+  .action-btns {
     opacity: 1;
   }
 }
