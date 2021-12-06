@@ -7,8 +7,14 @@
   min-height: 100vh;
   position: relative;
 }
+
+.all-todos-container {
+  display: flex;
+  gap: 1rem;
+}
+
 .todos-container {
-  max-width: 300px;
+  width: 260px;
 }
 
 .todos-title {
@@ -20,10 +26,6 @@
 
 .todos-description {
   margin: 1rem 0;
-}
-
-.todo-group {
-  width: 260px;
 }
 
 .todo {

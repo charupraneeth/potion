@@ -10,7 +10,7 @@ interface Props {
   index: number;
 }
 
-export const Todo: React.FC<Props> = ({ todo, index }) => {
+const Todo: React.FC<Props> = ({ todo, index }) => {
   const setSelectedTodo = useStoreActions(
     (actions: Actions<StoreModel>) => actions.setSelectedTodo
   );
@@ -30,9 +30,11 @@ export const Todo: React.FC<Props> = ({ todo, index }) => {
           onClick={handleModal}
         >
           {todo.content}
-          <DeleteTodo todoId={todo.id} />
+          <DeleteTodo todo={todo} />
         </div>
       )}
     </Draggable>
   );
 };
+
+export default Todo;

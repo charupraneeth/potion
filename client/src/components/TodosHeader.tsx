@@ -3,8 +3,18 @@ import React from "react";
 import { StoreModel } from "../store";
 
 import "../styles/TodosHeader.scss";
-export const TodosHeader: React.FC = ({}) => {
-  const todos = useStoreState((state: StoreModel) => state.todos);
+import { makeid } from "../utils";
+
+interface Props {
+  category: {
+    name: string;
+    id: string;
+  };
+}
+export const TodosHeader: React.FC<Props> = ({ category }) => {
+  const todos = useStoreState(
+    (state: StoreModel) => state.allTodos[category.id].todos
+  );
   const addOrEditTodo = useStoreActions(
     (actions: Actions<StoreModel>) => actions.addOrEditTodo
   );
@@ -13,13 +23,14 @@ export const TodosHeader: React.FC = ({}) => {
   );
 
   function handleAddTodo() {
-    const id = Date.now() + "";
+    const id = makeid(10);
     const startIndex = todos.size;
     addOrEditTodo({
       id,
       content: "",
+      categoryId: category.id,
     });
-    reorderTodos({ startIndex, endIndex: 0 });
+    reorderTodos({ startIndex, endIndex: 0, categoryId: category.id });
   }
   return (
     <div className="todos-header">
@@ -28,7 +39,7 @@ export const TodosHeader: React.FC = ({}) => {
         contentEditable={true}
         suppressContentEditableWarning={true}
       >
-        In progress
+        {category.name}
       </div>
       <div className="todo-header-add" onClick={handleAddTodo}>
         <svg viewBox="0 0 16 16" className="plus">

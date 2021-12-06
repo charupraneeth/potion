@@ -44,15 +44,14 @@ export const InputModal: React.FC = () => {
       alert("no todo ");
       return;
     }
-    addOrEditTodo({
-      content: updatedContent,
-      id: todo?.id,
-    });
+    const updatedTodo = todo;
+    updatedTodo.content = updatedContent;
+    addOrEditTodo(updatedTodo);
   }
   return (
     <div className="input-modal-overlay" onClick={handleOverlayClick}>
       <div className="input-modal">
-        {todo?.id && <DeleteTodo todoId={todo.id} />}
+        {todo?.id && <DeleteTodo todo={todo} />}
         {todo?.id && (
           <div
             ref={contentEl}

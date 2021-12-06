@@ -4,7 +4,11 @@ import Description from "../components/Description";
 
 import { StoreModel } from "../store";
 import { Actions, useStoreActions, useStoreState } from "easy-peasy";
-import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import {
+  DragDropContext,
+  DropResult,
+  ResponderProvided,
+} from "react-beautiful-dnd";
 import { InputModal } from "./InputModal";
 
 const Main = () => {
@@ -18,10 +22,13 @@ const Main = () => {
     console.log("drag ended");
 
     if (!result.destination) return;
-    reorderTodos({
-      startIndex: result.source.index,
-      endIndex: result.destination.index,
-    });
+    if (result.source.droppableId === result.destination.droppableId) {
+      reorderTodos({
+        startIndex: result.source.index,
+        endIndex: result.destination.index,
+        categoryId: result.destination.droppableId,
+      });
+    }
   }
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
