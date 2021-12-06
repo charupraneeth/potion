@@ -42,6 +42,7 @@ export interface StoreModel {
     };
   };
   addTodoGroup: Action<StoreModel>;
+  removeTodoGroup: Action<StoreModel, string>;
 }
 
 const model: StoreModel = {
@@ -125,6 +126,12 @@ const model: StoreModel = {
       category: { id: groupId, name: "" },
       todos: new Map<string, TodoType>(),
     };
+  }),
+  removeTodoGroup: action((state, categoryId) => {
+    const copy = { ...state.allTodos };
+    delete copy[categoryId];
+    console.log("removed group");
+    state.allTodos = copy;
   }),
 };
 
