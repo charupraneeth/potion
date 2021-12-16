@@ -208,7 +208,7 @@ const model: StoreModel = {
   }),
   updateData: thunk((actions, payload, helpers) => {
     const { type } = payload;
-
+    const state = helpers.getState();
     switch (type) {
       case "addOrEditTodo":
         actions.addOrEditTodo(payload.payload);
@@ -227,6 +227,7 @@ const model: StoreModel = {
         break;
       case "setMetaData":
         actions["setMetaData"](payload.payload);
+        localStorage.setItem("metaData", JSON.stringify(state.metaData));
         break;
       case "setSelectedTodo":
         actions["setSelectedTodo"](payload.payload);
@@ -237,6 +238,8 @@ const model: StoreModel = {
       case "addTodoGroup":
         actions["addTodoGroup"]();
     }
+    const allTodos = state.allTodos;
+    localStorage.setItem("allTodos", JSON.stringify(allTodos));
   }),
 };
 
