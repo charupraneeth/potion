@@ -5,22 +5,20 @@ import { TodosHeader } from "./TodosHeader";
 import Todo from "./Todo";
 
 const TodosContainer = () => {
+  const updaterThunk = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.updateData
+  );
   const allTodos = useStoreState((state: StoreModel) => state.allTodos);
 
-  const addTodoGroup = useStoreActions(
-    (actions: Actions<StoreModel>) => actions.addTodoGroup
-  );
-
   function handleNewGroup() {
-    addTodoGroup();
+    updaterThunk({ type: "addTodoGroup" });
   }
+
   return (
     <div className="all-todos-container">
       {allTodos.map((group, index) => (
         <Droppable droppableId={String(index)} key={index}>
           {(provided) => {
-            console.log("id", index);
-
             const { name, todos } = group;
             return (
               <>

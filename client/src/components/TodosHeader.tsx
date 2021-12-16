@@ -10,34 +10,34 @@ interface Props {
   groupId: number;
 }
 export const TodosHeader: React.FC<Props> = ({ groupName, groupId }) => {
-  const addOrEditTodo = useStoreActions(
-    (actions: Actions<StoreModel>) => actions.addOrEditTodo
+  const updaterThunk = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.updateData
   );
 
-  const setGroupName = useStoreActions(
-    (actions: Actions<StoreModel>) => actions.setGroupName
-  );
-  const removeTodoGroup = useStoreActions(
-    (actions: Actions<StoreModel>) => actions.removeTodoGroup
-  );
   function handleRemoveGroup() {
-    removeTodoGroup(String(groupId));
+    updaterThunk({ type: "removeTodoGroup", payload: String(groupId) });
   }
 
   function handleAddTodo() {
-    addOrEditTodo({
-      todo: { content: "", id: makeid(10) },
-      groupId: String(groupId),
-      todoIndex: null,
+    updaterThunk({
+      type: "addOrEditTodo",
+      payload: {
+        todo: { content: "", id: makeid(10) },
+        groupId: String(groupId),
+        todoIndex: null,
+      },
     });
   }
 
   function handleChange(e: FocusEvent) {
     if (!e.currentTarget) return;
-    setGroupName({
-      groupId: String(groupId),
-      // @ts-ignore
-      name: e.currentTarget.textContent,
+    updaterThunk({
+      type: "setGroupName",
+      payload: {
+        groupId: String(groupId),
+        // @ts-ignore
+        name: e.currentTarget.textContent,
+      },
     });
   }
   return (

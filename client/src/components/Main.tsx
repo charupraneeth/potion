@@ -3,17 +3,13 @@ import TodosContainer from "../components/TodosContainer";
 import Description from "../components/Description";
 
 import { StoreModel } from "../store";
-import { Actions, useStoreActions, useStoreState } from "easy-peasy";
+import { Action, Actions, useStoreActions, useStoreState } from "easy-peasy";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { InputModal } from "./InputModal";
 
 const Main = () => {
-  const reorderTodos = useStoreActions(
-    (actions: Actions<StoreModel>) => actions.reorderTodos
-  );
-
-  const moveTodos = useStoreActions(
-    (actions: Actions<StoreModel>) => actions.moveTodos
+  const updaterThunk = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.updateData
   );
 
   const selectedTodo = useStoreState((state: StoreModel) => state.selectedTodo);
@@ -24,17 +20,23 @@ const Main = () => {
     if (!result.destination) return;
     if (result.source.droppableId === result.destination.droppableId) {
       if (result.source.index === result.destination.index) return;
-      return reorderTodos({
-        startIndex: result.source.index,
-        endIndex: result.destination.index,
-        groupId: result.destination.droppableId,
+      return updaterThunk({
+        type: "reorderTodos",
+        payload: {
+          startIndex: result.source.index,
+          endIndex: result.destination.index,
+          groupId: result.destination.droppableId,
+        },
       });
     }
-    moveTodos({
-      sourceIndex: result.source.index,
-      destinationIndex: result.destination.index,
-      destinationId: result.destination.droppableId,
-      sourceId: result.source.droppableId,
+    updaterThunk({
+      type: "moveTodos",
+      payload: {
+        sourceIndex: result.source.index,
+        destinationIndex: result.destination.index,
+        destinationId: result.destination.droppableId,
+        sourceId: result.source.droppableId,
+      },
     });
   }
   return (

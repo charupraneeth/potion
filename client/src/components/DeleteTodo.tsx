@@ -9,17 +9,14 @@ interface Props {
 }
 
 export const DeleteTodo: React.FC<Props> = ({ todoId, groupId }) => {
-  const deleteTodo = useStoreActions(
-    (actions: Actions<StoreModel>) => actions.deleteTodo
-  );
-  const setSelectedTodo = useStoreActions(
-    (actions: Actions<StoreModel>) => actions.setSelectedTodo
+  const updaterThunk = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.updateData
   );
 
   function handleDelete(event: React.MouseEvent) {
     event.stopPropagation();
-    deleteTodo({ groupId, todoId });
-    setSelectedTodo(null);
+    updaterThunk({ type: "deleteTodo", payload: { groupId, todoId } });
+    updaterThunk({ type: "setSelectedTodo", payload: null });
   }
   return (
     <span className="delete-todo" onClick={handleDelete}>

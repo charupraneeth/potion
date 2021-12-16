@@ -4,8 +4,8 @@ import { StoreModel } from "../store";
 
 function Title() {
   const title = useStoreState((state: StoreModel) => state.metaData.title);
-  const setMetaData = useStoreActions(
-    (actions: Actions<StoreModel>) => actions.setMetaData
+  const updaterThunk = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.updateData
   );
   const firstTitle = title;
 
@@ -22,10 +22,16 @@ function Title() {
         console.log("changed");
         // @ts-ignore
         if (!e?.currentTarget?.textContent) {
-          setMetaData({ content: "", type: "title" });
+          updaterThunk({
+            type: "setMetaData",
+            payload: { content: "", type: "title" },
+          });
           return;
         }
-        setMetaData({ content: e.currentTarget.textContent, type: "title" });
+        updaterThunk({
+          type: "setMetaData",
+          payload: { content: e.currentTarget.textContent, type: "title" },
+        });
       }}
       contentEditable="true"
       suppressContentEditableWarning={true}

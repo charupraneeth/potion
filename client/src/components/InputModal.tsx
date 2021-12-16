@@ -8,6 +8,9 @@ export const InputModal: React.FC = () => {
   const contentEl = useRef(null);
   const selectedTodo = useStoreState((state: StoreModel) => state.selectedTodo);
 
+  const updaterThunk = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.updateData
+  );
   useEffect(() => {
     if (!contentEl.current) return;
     const el = contentEl.current;
@@ -21,19 +24,13 @@ export const InputModal: React.FC = () => {
     // @ts-ignore
     el.focus();
   }, []);
-  const addOrEditTodo = useStoreActions(
-    (actions: Actions<StoreModel>) => actions.addOrEditTodo
-  );
-
-  const setSelectedTodo = useStoreActions(
-    (actions: Actions<StoreModel>) => actions.setSelectedTodo
-  );
 
   function handleOverlayClick(event: React.MouseEvent) {
     console.log("over lay click");
     // @ts-ignore
     if (event.target.classList[0] !== "input-modal-overlay") return;
-    setSelectedTodo(null);
+
+    updaterThunk({ type: "setSelectedTodo", payload: null });
   }
 
   function handleInput(event: React.KeyboardEvent) {
@@ -46,7 +43,7 @@ export const InputModal: React.FC = () => {
     }
     const updated = selectedTodo;
     updated.todo.content = updatedContent;
-    addOrEditTodo(updated);
+    updaterThunk({ type: "addOrEditTodo", payload: updated });
   }
   return (
     <div className="input-modal-overlay" onClick={handleOverlayClick}>

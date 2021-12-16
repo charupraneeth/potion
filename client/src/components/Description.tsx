@@ -9,7 +9,9 @@ const Description = () => {
   const setMetaData = useStoreActions(
     (actions: Actions<StoreModel>) => actions.setMetaData
   );
-
+  const updaterThunk = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.updateData
+  );
   const firstDescription = description;
   return (
     <p
@@ -19,12 +21,20 @@ const Description = () => {
       onBlur={(e) => {
         // @ts-ignore
         if (!e?.currentTarget?.textContent) {
-          setMetaData({ content: "", type: "description" });
+          updaterThunk({
+            type: "setMetaData",
+            payload: { content: "", type: "description" },
+          });
+
           return;
         }
-        setMetaData({
-          content: e.currentTarget.textContent,
-          type: "description",
+
+        updaterThunk({
+          type: "setMetaData",
+          payload: {
+            content: e.currentTarget.textContent,
+            type: "description",
+          },
         });
       }}
     >

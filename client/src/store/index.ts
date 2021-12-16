@@ -1,4 +1,4 @@
-import { Action, action, createStore } from "easy-peasy";
+import { Action, action, createStore, thunk, Thunk } from "easy-peasy";
 import "easy-peasy/map-set-support";
 import { TodoType } from "../@types";
 import { makeid } from "../utils";
@@ -50,29 +50,57 @@ type MetaData = {
   title: string;
   description: string;
 };
+type ThunkPayload =
+  | {
+      type: "setMetaData";
+      payload: SetMetaPayload;
+    }
+  | {
+      type: "setSelectedTodo";
+      payload: SetSelectedTodoPayload | null;
+    }
+  | {
+      type: "reorderTodos";
+      payload: ReorderPayload;
+    }
+  | {
+      type: "moveTodos";
+      payload: MovePayload;
+    }
+  | {
+      type: "addOrEditTodo";
+      payload: AddOrEditPayload;
+    }
+  | {
+      type: "deleteTodo";
+      payload: DeletePayload;
+    }
+  | {
+      type: "setGroupName";
+      payload: SetGroupNamePayload;
+    }
+  | {
+      type: "removeTodoGroup";
+      payload: string;
+    }
+  | {
+      type: "addTodoGroup";
+    };
 
 export interface StoreModel {
   metaData: MetaData;
   setMetaData: Action<StoreModel, SetMetaPayload>;
   selectedTodo: SetSelectedTodoPayload | null;
+  setSelectedTodo: Action<StoreModel, SetSelectedTodoPayload | null>;
   reorderTodos: Action<StoreModel, ReorderPayload>;
   moveTodos: Action<StoreModel, MovePayload>;
   addOrEditTodo: Action<StoreModel, AddOrEditPayload>;
-  setSelectedTodo: Action<StoreModel, SetSelectedTodoPayload | null>;
   deleteTodo: Action<StoreModel, DeletePayload>;
   allTodos: GroupType[];
   setGroupName: Action<StoreModel, SetGroupNamePayload>;
-  // allTodos: {
-  //   [categoryId: string]: {
-  //     category: {
-  //       id: string;
-  //       name: string;
-  //     };
-  //     todos: Map<string, TodoType>;
-  //   };
-  // };
   addTodoGroup: Action<StoreModel>;
   removeTodoGroup: Action<StoreModel, string>;
+  updateData: Thunk<StoreModel, ThunkPayload>;
 }
 
 const model: StoreModel = {
@@ -177,6 +205,38 @@ const model: StoreModel = {
     console.log("group name set");
 
     state.allTodos[parseInt(groupId)].name = name;
+  }),
+  updateData: thunk((actions, payload, helpers) => {
+    const { type } = payload;
+
+    switch (type) {
+      case "addOrEditTodo":
+        actions.addOrEditTodo(payload.payload);
+        break;
+      case "deleteTodo":
+        actions["deleteTodo"](payload.payload);
+        break;
+      case "reorderTodos":
+        actions["reorderTodos"](payload.payload);
+        break;
+      case "moveTodos":
+        actions["moveTodos"](payload.payload);
+        break;
+      case "setGroupName":
+        actions["setGroupName"](payload.payload);
+        break;
+      case "setMetaData":
+        actions["setMetaData"](payload.payload);
+        break;
+      case "setSelectedTodo":
+        actions["setSelectedTodo"](payload.payload);
+        break;
+      case "removeTodoGroup":
+        actions["removeTodoGroup"](payload.payload);
+        break;
+      case "addTodoGroup":
+        actions["addTodoGroup"]();
+    }
   }),
 };
 

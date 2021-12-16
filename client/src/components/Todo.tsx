@@ -12,12 +12,15 @@ interface Props {
 }
 
 const Todo: React.FC<Props> = ({ todo, index, groupId }) => {
-  const setSelectedTodo = useStoreActions(
-    (actions: Actions<StoreModel>) => actions.setSelectedTodo
+  const updaterThunk = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.updateData
   );
 
   function handleModal() {
-    setSelectedTodo({ todo, groupId: String(groupId), todoIndex: index });
+    updaterThunk({
+      type: "setSelectedTodo",
+      payload: { todo, groupId: String(groupId), todoIndex: index },
+    });
   }
 
   return (
