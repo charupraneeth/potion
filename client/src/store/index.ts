@@ -37,6 +37,11 @@ type SetMetaPayload = {
   content: string;
 };
 
+type SetGroupNamePayload = {
+  groupId: string;
+  name: string;
+};
+
 type GroupType = {
   name: string;
   todos: TodoType[];
@@ -56,6 +61,7 @@ export interface StoreModel {
   setSelectedTodo: Action<StoreModel, SetSelectedTodoPayload | null>;
   deleteTodo: Action<StoreModel, DeletePayload>;
   allTodos: GroupType[];
+  setGroupName: Action<StoreModel, SetGroupNamePayload>;
   // allTodos: {
   //   [categoryId: string]: {
   //     category: {
@@ -164,6 +170,13 @@ const model: StoreModel = {
     } else if (payload.type === "description") {
       state.metaData.description = payload.content;
     }
+  }),
+
+  setGroupName: action((state, payload) => {
+    const { groupId, name } = payload;
+    console.log("group name set");
+
+    state.allTodos[parseInt(groupId)].name = name;
   }),
 };
 

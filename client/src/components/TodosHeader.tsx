@@ -1,5 +1,5 @@
 import { Actions, useStoreActions, useStoreState } from "easy-peasy";
-import React from "react";
+import React, { FocusEvent } from "react";
 import { StoreModel } from "../store";
 
 import "../styles/TodosHeader.scss";
@@ -14,6 +14,9 @@ export const TodosHeader: React.FC<Props> = ({ groupName, groupId }) => {
     (actions: Actions<StoreModel>) => actions.addOrEditTodo
   );
 
+  const setGroupName = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.setGroupName
+  );
   const removeTodoGroup = useStoreActions(
     (actions: Actions<StoreModel>) => actions.removeTodoGroup
   );
@@ -28,12 +31,22 @@ export const TodosHeader: React.FC<Props> = ({ groupName, groupId }) => {
       todoIndex: null,
     });
   }
+
+  function handleChange(e: FocusEvent) {
+    if (!e.currentTarget) return;
+    setGroupName({
+      groupId: String(groupId),
+      // @ts-ignore
+      name: e.currentTarget.textContent,
+    });
+  }
   return (
     <div className="todos-header">
       <div
         className="todo-header-title editable"
         contentEditable={true}
         suppressContentEditableWarning={true}
+        onBlur={handleChange}
       >
         {groupName}
       </div>
