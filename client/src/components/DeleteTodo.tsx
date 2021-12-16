@@ -1,13 +1,13 @@
 import { Actions, useStoreActions } from "easy-peasy";
 import React from "react";
-import { TodoType } from "../@types";
 import { StoreModel } from "../store";
 
 interface Props {
-  todo: TodoType;
+  todoId: string;
+  groupId: string;
 }
 
-export const DeleteTodo: React.FC<Props> = ({ todo }) => {
+export const DeleteTodo: React.FC<Props> = ({ todoId, groupId }) => {
   const deleteTodo = useStoreActions(
     (actions: Actions<StoreModel>) => actions.deleteTodo
   );
@@ -17,7 +17,7 @@ export const DeleteTodo: React.FC<Props> = ({ todo }) => {
 
   function handleDelete(event: React.MouseEvent) {
     event.stopPropagation();
-    deleteTodo(todo);
+    deleteTodo({ groupId, todoId });
     setSelectedTodo(null);
   }
   return (

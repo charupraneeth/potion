@@ -6,7 +6,7 @@ import { DeleteTodo } from "./DeleteTodo";
 
 export const InputModal: React.FC = () => {
   const contentEl = useRef(null);
-  const todo = useStoreState((state: StoreModel) => state.selectedTodo);
+  const selectedTodo = useStoreState((state: StoreModel) => state.selectedTodo);
 
   useEffect(() => {
     if (!contentEl.current) return;
@@ -40,19 +40,24 @@ export const InputModal: React.FC = () => {
     // @ts-ignore
     const updatedContent = event.target?.textContent;
 
-    if (!todo) {
+    if (!selectedTodo || !selectedTodo.todo) {
       alert("no todo ");
       return;
     }
-    const updatedTodo = todo;
-    updatedTodo.content = updatedContent;
-    addOrEditTodo(updatedTodo);
+    const updated = selectedTodo;
+    updated.todo.content = updatedContent;
+    addOrEditTodo(updated);
   }
   return (
     <div className="input-modal-overlay" onClick={handleOverlayClick}>
       <div className="input-modal">
-        {todo?.id && <DeleteTodo todo={todo} />}
-        {todo?.id && (
+        {selectedTodo?.todo?.id && (
+          <DeleteTodo
+            todoId={selectedTodo.todo.id}
+            groupId={selectedTodo.groupId}
+          />
+        )}
+        {selectedTodo?.todo?.id && (
           <div
             ref={contentEl}
             className="input-modal-content"
@@ -60,7 +65,7 @@ export const InputModal: React.FC = () => {
             onKeyUp={handleInput}
             suppressContentEditableWarning={true}
           >
-            {todo?.content}
+            {selectedTodo.todo?.content}
           </div>
         )}
       </div>

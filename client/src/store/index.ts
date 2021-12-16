@@ -6,7 +6,7 @@ import { makeid } from "../utils";
 export type ReorderPayload = {
   startIndex: number;
   endIndex: number;
-  categoryId: string;
+  groupId: string;
 };
 
 type MovePayload = {
@@ -17,98 +17,106 @@ type MovePayload = {
 };
 type AddOrEditPayload = {
   todo: TodoType;
-  categoryId: string;
+  groupId: string;
+  todoIndex: number | null;
 };
 
 type DeletePayload = {
   todoId: string;
-  categoryId: string;
+  groupId: string;
+};
+
+type SetSelectedTodoPayload = {
+  todo: TodoType;
+  groupId: string;
+  todoIndex: number;
+};
+
+type GroupType = {
+  name: string;
+  todos: TodoType[];
 };
 
 export interface StoreModel {
-  selectedTodo: TodoType | null;
+  selectedTodo: SetSelectedTodoPayload | null;
   reorderTodos: Action<StoreModel, ReorderPayload>;
   moveTodos: Action<StoreModel, MovePayload>;
-  addOrEditTodo: Action<StoreModel, TodoType>;
-  setSelectedTodo: Action<StoreModel, TodoType | null>;
-  deleteTodo: Action<StoreModel, TodoType>;
-  allTodos: {
-    [categoryId: string]: {
-      category: {
-        id: string;
-        name: string;
-      };
-      todos: Map<string, TodoType>;
-    };
-  };
+  addOrEditTodo: Action<StoreModel, AddOrEditPayload>;
+  setSelectedTodo: Action<StoreModel, SetSelectedTodoPayload | null>;
+  deleteTodo: Action<StoreModel, DeletePayload>;
+  allTodos: GroupType[];
+  // allTodos: {
+  //   [categoryId: string]: {
+  //     category: {
+  //       id: string;
+  //       name: string;
+  //     };
+  //     todos: Map<string, TodoType>;
+  //   };
+  // };
   addTodoGroup: Action<StoreModel>;
   removeTodoGroup: Action<StoreModel, string>;
 }
 
 const model: StoreModel = {
   selectedTodo: null,
-  allTodos: {
-    "12345abcd": {
-      category: {
-        id: "12345abcd",
-        name: "completed",
-      },
-      todos: new Map(
-        Object.entries({
-          "6": { id: "6", content: "first todo", categoryId: "12345abcd" },
-          "7": { id: "7", content: "second todo", categoryId: "12345abcd" },
-          "8": { id: "8", content: "third todo", categoryId: "12345abcd" },
-          "9": { id: "9", content: "fourt todo", categoryId: "12345abcd" },
-          "10": { id: "10", content: "fifth todo", categoryId: "12345abcd" },
-        })
-      ),
+  allTodos: [
+    {
+      name: "completed",
+      todos: [
+        { id: makeid(9), content: "first todo" },
+        { id: makeid(9), content: "second todo" },
+        { id: makeid(9), content: "third todo" },
+        { id: makeid(9), content: "fourt todo" },
+        { id: makeid(9), content: "fifth todo" },
+      ],
     },
-    "67890abcd": {
-      category: {
-        id: "67890abcd",
-        name: "in progress",
-      },
-      todos: new Map(
-        Object.entries({
-          "1": { id: "1", content: "first todo", categoryId: "67890abcd" },
-          "2": { id: "2", content: "second todo", categoryId: "67890abcd" },
-          "3": { id: "3", content: "third todo", categoryId: "67890abcd" },
-          "4": { id: "4", content: "fourt todo", categoryId: "67890abcd" },
-          "5": { id: "5", content: "fifth todo", categoryId: "67890abcd" },
-        })
-      ),
+    {
+      name: "in progres",
+      todos: [
+        { id: makeid(9), content: "first todo" },
+        { id: makeid(9), content: "second todo" },
+        { id: makeid(9), content: "third todo" },
+        { id: makeid(9), content: "fourt todo" },
+        { id: makeid(9), content: "fifth todo" },
+      ],
     },
-  },
+  ],
+
   reorderTodos: action((state, payload) => {
-    const { endIndex, startIndex, categoryId } = payload;
-    const entries = [...state.allTodos[categoryId].todos.entries()];
+    const { endIndex, startIndex, groupId } = payload;
+    const todos = state.allTodos[parseInt(groupId)].todos;
+    const [removed] = todos.splice(startIndex, 1);
+    todos.splice(endIndex, 0, removed);
 
-    const [removed] = entries.splice(startIndex, 1);
-    entries.splice(endIndex, 0, removed);
+    console.log("reordered", removed);
 
-    console.log("reordered");
-
-    state.allTodos[categoryId].todos = new Map(entries);
+    state.allTodos[parseInt(groupId)].todos = todos;
   }),
+
   moveTodos: action((state, payload) => {
     const { destinationId, destinationIndex, sourceId, sourceIndex } = payload;
-    const sourceEntries = [...state.allTodos[sourceId].todos.entries()];
-    const destinationEntries = [
-      ...state.allTodos[destinationId].todos.entries(),
-    ];
+    const sourceEntries = state.allTodos[parseInt(sourceId)].todos;
+
+    const destinationEntries = state.allTodos[parseInt(destinationId)].todos;
 
     const [removed] = sourceEntries.splice(sourceIndex, 1);
-    removed[1].categoryId = destinationId;
-    destinationEntries.splice(destinationIndex, 0, removed);
-    console.log("moved");
 
-    state.allTodos[sourceId].todos = new Map(sourceEntries);
-    state.allTodos[destinationId].todos = new Map(destinationEntries);
+    destinationEntries.splice(destinationIndex, 0, removed);
+    console.log("moved", removed);
+
+    state.allTodos[parseInt(sourceId)].todos = sourceEntries;
+    state.allTodos[parseInt(destinationId)].todos = destinationEntries;
   }),
 
   addOrEditTodo: action((state, payload) => {
-    const { categoryId } = payload;
-    state.allTodos[categoryId].todos.set(payload.id, payload);
+    const { groupId, todo, todoIndex } = payload;
+    console.log(todoIndex, todo.id);
+    if (todoIndex == null) {
+      state.allTodos[parseInt(groupId)].todos.push(todo);
+    } else {
+      state.allTodos[parseInt(groupId)].todos[todoIndex] = todo;
+    }
   }),
 
   setSelectedTodo: action((state, payload) => {
@@ -117,21 +125,20 @@ const model: StoreModel = {
 
   deleteTodo: action((state, payload) => {
     console.log("deleted");
-    const { categoryId, id } = payload;
-    state.allTodos[categoryId].todos.delete(id);
+    const { groupId, todoId } = payload;
+    const todos = state.allTodos[parseInt(groupId)].todos;
+    state.allTodos[parseInt(groupId)].todos = todos.filter(
+      (todo) => todo.id != todoId
+    );
   }),
+
   addTodoGroup: action((state) => {
-    const groupId = makeid(10);
-    state.allTodos[groupId] = {
-      category: { id: groupId, name: "" },
-      todos: new Map<string, TodoType>(),
-    };
+    state.allTodos.push({ name: "", todos: [] });
   }),
-  removeTodoGroup: action((state, categoryId) => {
-    const copy = { ...state.allTodos };
-    delete copy[categoryId];
-    console.log("removed group");
-    state.allTodos = copy;
+
+  removeTodoGroup: action((state, groupId) => {
+    console.log("removed group", groupId);
+    delete state.allTodos[parseInt(groupId)];
   }),
 };
 

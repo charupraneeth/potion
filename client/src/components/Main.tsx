@@ -27,7 +27,7 @@ const Main = () => {
       return reorderTodos({
         startIndex: result.source.index,
         endIndex: result.destination.index,
-        categoryId: result.destination.droppableId,
+        groupId: result.destination.droppableId,
       });
     }
     moveTodos({
@@ -44,7 +44,7 @@ const Main = () => {
         <Description />
         <TodosContainer />
       </main>
-      {selectedTodo && selectedTodo.id && <InputModal />}
+      {selectedTodo && selectedTodo.todo.id && <InputModal />}
     </DragDropContext>
   );
 };

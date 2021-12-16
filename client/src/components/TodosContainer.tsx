@@ -16,12 +16,12 @@ const TodosContainer = () => {
   }
   return (
     <div className="all-todos-container">
-      {Object.keys(allTodos).map((categoryId) => (
-        <Droppable droppableId={categoryId} key={categoryId}>
+      {allTodos.map((group, index) => (
+        <Droppable droppableId={String(index)} key={index}>
           {(provided) => {
-            console.log("id", categoryId);
+            console.log("id", index);
 
-            const { category, todos } = allTodos[categoryId];
+            const { name, todos } = group;
             return (
               <>
                 <div
@@ -29,11 +29,17 @@ const TodosContainer = () => {
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                 >
-                  <TodosHeader category={category} />
+                  <TodosHeader groupName={name} groupId={index} />
                   <div className="todos-wrap">
-                    {[...todos.entries()].map((entry, index) => {
-                      const todo = entry[1];
-                      return <Todo key={todo.id} todo={todo} index={index} />;
+                    {todos.map((todo, todoIndex) => {
+                      return (
+                        <Todo
+                          key={todo.id}
+                          todo={todo}
+                          index={todoIndex}
+                          groupId={index}
+                        />
+                      );
                     })}
                   </div>
                   {provided.placeholder}

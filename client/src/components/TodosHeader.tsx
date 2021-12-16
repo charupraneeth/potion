@@ -6,38 +6,27 @@ import "../styles/TodosHeader.scss";
 import { makeid } from "../utils";
 
 interface Props {
-  category: {
-    name: string;
-    id: string;
-  };
+  groupName: string;
+  groupId: number;
 }
-export const TodosHeader: React.FC<Props> = ({ category }) => {
-  const todos = useStoreState(
-    (state: StoreModel) => state.allTodos[category.id].todos
-  );
+export const TodosHeader: React.FC<Props> = ({ groupName, groupId }) => {
   const addOrEditTodo = useStoreActions(
     (actions: Actions<StoreModel>) => actions.addOrEditTodo
-  );
-  const reorderTodos = useStoreActions(
-    (actions: Actions<StoreModel>) => actions.reorderTodos
   );
 
   const removeTodoGroup = useStoreActions(
     (actions: Actions<StoreModel>) => actions.removeTodoGroup
   );
   function handleRemoveGroup() {
-    removeTodoGroup(category.id);
+    removeTodoGroup(String(groupId));
   }
 
   function handleAddTodo() {
-    const id = makeid(10);
-    const startIndex = todos.size;
     addOrEditTodo({
-      id,
-      content: "",
-      categoryId: category.id,
+      todo: { content: "", id: makeid(10) },
+      groupId: String(groupId),
+      todoIndex: null,
     });
-    reorderTodos({ startIndex, endIndex: 0, categoryId: category.id });
   }
   return (
     <div className="todos-header">
@@ -46,7 +35,7 @@ export const TodosHeader: React.FC<Props> = ({ category }) => {
         contentEditable={true}
         suppressContentEditableWarning={true}
       >
-        {category.name}
+        {groupName}
       </div>
       <div className="action-btns">
         <div className="todo-header-remove" onClick={handleRemoveGroup}>

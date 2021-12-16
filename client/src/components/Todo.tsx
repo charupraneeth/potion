@@ -8,15 +8,16 @@ import { DeleteTodo } from "./DeleteTodo";
 interface Props {
   todo: TodoType;
   index: number;
+  groupId: number;
 }
 
-const Todo: React.FC<Props> = ({ todo, index }) => {
+const Todo: React.FC<Props> = ({ todo, index, groupId }) => {
   const setSelectedTodo = useStoreActions(
     (actions: Actions<StoreModel>) => actions.setSelectedTodo
   );
 
   function handleModal() {
-    setSelectedTodo(todo);
+    setSelectedTodo({ todo, groupId: String(groupId), todoIndex: index });
   }
 
   return (
@@ -30,7 +31,7 @@ const Todo: React.FC<Props> = ({ todo, index }) => {
           onClick={handleModal}
         >
           {todo.content}
-          <DeleteTodo todo={todo} />
+          <DeleteTodo todoId={todo.id} groupId={String(groupId)} />
         </div>
       )}
     </Draggable>
