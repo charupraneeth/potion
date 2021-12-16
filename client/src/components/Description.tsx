@@ -1,23 +1,31 @@
+import { Actions, useStoreActions, useStoreState } from "easy-peasy";
 import { useEffect, useRef, useState } from "react";
+import { StoreModel } from "../store";
 
 const Description = () => {
-  const [description, setDescription] = useState("This is Description");
+  const description = useStoreState(
+    (state: StoreModel) => state.metaData.description
+  );
+  const setMetaData = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.setMetaData
+  );
 
-  const counter = useRef(0);
-
-  const firstDescription = "This is Description";
+  const firstDescription = description;
   return (
     <p
       className="todos-description editable"
       contentEditable="true"
       suppressContentEditableWarning={true}
-      onKeyDown={(e) => {
+      onBlur={(e) => {
         // @ts-ignore
         if (!e?.currentTarget?.textContent) {
-          setDescription("");
+          setMetaData({ content: "", type: "description" });
           return;
         }
-        setDescription(e.currentTarget.textContent);
+        setMetaData({
+          content: e.currentTarget.textContent,
+          type: "description",
+        });
       }}
     >
       {firstDescription}

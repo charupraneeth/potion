@@ -1,9 +1,13 @@
+import { Actions, useStoreActions, useStoreState } from "easy-peasy";
 import { useEffect, useRef, useState } from "react";
+import { StoreModel } from "../store";
 
 function Title() {
-  const [title, setTitle] = useState("This is the title");
-
-  const firstTitle = "This is the title";
+  const title = useStoreState((state: StoreModel) => state.metaData.title);
+  const setMetaData = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.setMetaData
+  );
+  const firstTitle = title;
 
   // const titleEl = useRef(null);
   // useEffect(() => {
@@ -14,15 +18,14 @@ function Title() {
   return (
     <div
       className={`todos-title editable`}
-      onKeyDown={(e) => {
+      onBlur={(e) => {
         console.log("changed");
         // @ts-ignore
         if (!e?.currentTarget?.textContent) {
-          setTitle("");
+          setMetaData({ content: "", type: "title" });
           return;
         }
-
-        setTitle(e.currentTarget.textContent);
+        setMetaData({ content: e.currentTarget.textContent, type: "title" });
       }}
       contentEditable="true"
       suppressContentEditableWarning={true}

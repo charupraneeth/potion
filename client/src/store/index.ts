@@ -32,12 +32,23 @@ type SetSelectedTodoPayload = {
   todoIndex: number;
 };
 
+type SetMetaPayload = {
+  type: "title" | "description";
+  content: string;
+};
+
 type GroupType = {
   name: string;
   todos: TodoType[];
 };
+type MetaData = {
+  title: string;
+  description: string;
+};
 
 export interface StoreModel {
+  metaData: MetaData;
+  setMetaData: Action<StoreModel, SetMetaPayload>;
   selectedTodo: SetSelectedTodoPayload | null;
   reorderTodos: Action<StoreModel, ReorderPayload>;
   moveTodos: Action<StoreModel, MovePayload>;
@@ -60,6 +71,10 @@ export interface StoreModel {
 
 const model: StoreModel = {
   selectedTodo: null,
+  metaData: {
+    description: "This is the description",
+    title: "This is the title",
+  },
   allTodos: [
     {
       name: "completed",
@@ -139,6 +154,16 @@ const model: StoreModel = {
   removeTodoGroup: action((state, groupId) => {
     console.log("removed group", groupId);
     delete state.allTodos[parseInt(groupId)];
+  }),
+
+  setMetaData: action((state, payload) => {
+    console.log("meta changes", payload.content);
+
+    if (payload.type === "title") {
+      state.metaData.title = payload.content;
+    } else if (payload.type === "description") {
+      state.metaData.description = payload.content;
+    }
   }),
 };
 
