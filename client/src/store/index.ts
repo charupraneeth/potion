@@ -1,4 +1,4 @@
-import { Action, action, createStore, thunk, Thunk } from "easy-peasy";
+import { Action, action, createStore, persist, thunk, Thunk } from "easy-peasy";
 import "easy-peasy/map-set-support";
 import { TodoType } from "../@types";
 import { makeid } from "../utils";
@@ -100,6 +100,7 @@ export interface StoreModel {
   setGroupName: Action<StoreModel, SetGroupNamePayload>;
   addTodoGroup: Action<StoreModel>;
   removeTodoGroup: Action<StoreModel, string>;
+  setAllTodos: Action<StoreModel, GroupType[]>;
   updateData: Thunk<StoreModel, ThunkPayload>;
 }
 
@@ -109,6 +110,7 @@ const model: StoreModel = {
     description: "This is the description",
     title: "This is the title",
   },
+
   allTodos: [
     {
       name: "completed",
@@ -187,7 +189,9 @@ const model: StoreModel = {
 
   removeTodoGroup: action((state, groupId) => {
     console.log("removed group", groupId);
-    delete state.allTodos[parseInt(groupId)];
+    state.allTodos = state.allTodos.filter(
+      (_, index) => index != parseInt(groupId)
+    );
   }),
 
   setMetaData: action((state, payload) => {
@@ -206,9 +210,13 @@ const model: StoreModel = {
 
     state.allTodos[parseInt(groupId)].name = name;
   }),
-  updateData: thunk((actions, payload, helpers) => {
+
+  setAllTodos: action((state, payload) => {
+    state.allTodos = payload;
+  }),
+  updateData: thunk(async (actions, payload, helpers) => {
     const { type } = payload;
-    const state = helpers.getState();
+
     switch (type) {
       case "addOrEditTodo":
         actions.addOrEditTodo(payload.payload);
@@ -227,7 +235,6 @@ const model: StoreModel = {
         break;
       case "setMetaData":
         actions["setMetaData"](payload.payload);
-        localStorage.setItem("metaData", JSON.stringify(state.metaData));
         break;
       case "setSelectedTodo":
         actions["setSelectedTodo"](payload.payload);
@@ -237,12 +244,13 @@ const model: StoreModel = {
         break;
       case "addTodoGroup":
         actions["addTodoGroup"]();
+        break;
     }
-    const allTodos = state.allTodos;
-    localStorage.setItem("allTodos", JSON.stringify(allTodos));
   }),
 };
 
-const store = createStore(model, { name: "my-simple-store" });
+const store = createStore(model, {
+  name: "my-simple-store",
+});
 
 export default store;

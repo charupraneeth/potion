@@ -3,7 +3,6 @@ import "./App.scss";
 
 import Main from "./components/Main";
 import store from "./store";
-
 function App() {
   return (
     <StoreProvider store={store}>

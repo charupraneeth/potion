@@ -3,11 +3,33 @@ import TodosContainer from "../components/TodosContainer";
 import Description from "../components/Description";
 
 import { StoreModel } from "../store";
-import { Action, Actions, useStoreActions, useStoreState } from "easy-peasy";
+import {
+  Actions,
+  useStoreActions,
+  useStoreRehydrated,
+  useStoreState,
+} from "easy-peasy";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { InputModal } from "./InputModal";
 
 const Main = () => {
+  const isRehyDrated = useStoreRehydrated();
+
+  const metaData = localStorage.getItem("metaData");
+  const allTodos = localStorage.getItem("allTodos");
+  const setAllTodos = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.setAllTodos
+  );
+  const setMetaData = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.setMetaData
+  );
+  if (metaData) {
+    setMetaData(JSON.parse(metaData));
+  }
+  if (allTodos) {
+    setAllTodos(JSON.parse(allTodos));
+  }
+
   const updaterThunk = useStoreActions(
     (actions: Actions<StoreModel>) => actions.updateData
   );
@@ -41,11 +63,15 @@ const Main = () => {
   }
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <main className="main">
-        <Title />
-        <Description />
-        <TodosContainer />
-      </main>
+      {isRehyDrated ? (
+        <main className="main">
+          <Title />
+          <Description />
+          <TodosContainer />
+        </main>
+      ) : (
+        <div>loading...</div>
+      )}
       {selectedTodo && selectedTodo.todo.id && <InputModal />}
     </DragDropContext>
   );
