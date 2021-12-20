@@ -3,32 +3,47 @@ import TodosContainer from "../components/TodosContainer";
 import Description from "../components/Description";
 
 import { StoreModel } from "../store";
-import {
-  Actions,
-  useStoreActions,
-  useStoreRehydrated,
-  useStoreState,
-} from "easy-peasy";
+import { Actions, useStoreActions, useStoreState } from "easy-peasy";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { InputModal } from "./InputModal";
+import { useEffect, useState } from "react";
 
 const Main = () => {
-  const isRehyDrated = useStoreRehydrated();
+  const [connected, setConnected] = useState(false);
 
-  const metaData = localStorage.getItem("metaData");
-  const allTodos = localStorage.getItem("allTodos");
   const setAllTodos = useStoreActions(
     (actions: Actions<StoreModel>) => actions.setAllTodos
   );
   const setMetaData = useStoreActions(
     (actions: Actions<StoreModel>) => actions.setMetaData
   );
-  if (metaData) {
-    setMetaData(JSON.parse(metaData));
-  }
-  if (allTodos) {
-    setAllTodos(JSON.parse(allTodos));
-  }
+  const setWs = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.setWs
+  );
+  useEffect(() => {
+    const socket = new WebSocket("ws://192.168.1.4:1337");
+    socket.onopen = () => {
+      console.log("socket connected");
+      setConnected(true);
+      setWs(socket);
+    };
+    socket.onmessage = (msg) => {
+      console.log("msg recieved", msg.data);
+      const { type, payload } = JSON.parse(msg.data);
+      if (type === "initialData") {
+        const { allTodos, metaData } = payload;
+        if (metaData?.title) {
+          setMetaData({ type: "title", content: metaData.title });
+        }
+        if (metaData?.description) {
+          setMetaData({ type: "description", content: metaData.description });
+        }
+
+        setAllTodos(allTodos);
+        setMetaData(metaData);
+      }
+    };
+  }, []);
 
   const updaterThunk = useStoreActions(
     (actions: Actions<StoreModel>) => actions.updateData
@@ -63,7 +78,7 @@ const Main = () => {
   }
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      {isRehyDrated ? (
+      {connected ? (
         <main className="main">
           <Title />
           <Description />

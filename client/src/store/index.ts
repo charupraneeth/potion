@@ -92,6 +92,8 @@ type ThunkPayload =
     };
 
 export interface StoreModel {
+  ws: WebSocket | null;
+  setWs: Action<StoreModel, WebSocket>;
   metaData: MetaData;
   setMetaData: Action<StoreModel, SetMetaPayload>;
   selectedTodo: SetSelectedTodoPayload | null;
@@ -109,34 +111,14 @@ export interface StoreModel {
 }
 
 const model: StoreModel = {
+  ws: null,
   selectedTodo: null,
   metaData: {
-    description: "This is the description",
-    title: "This is the title",
+    description: "",
+    title: "",
   },
 
-  allTodos: [
-    {
-      name: "completed",
-      todos: [
-        { id: makeid(9), content: "first todo" },
-        { id: makeid(9), content: "second todo" },
-        { id: makeid(9), content: "third todo" },
-        { id: makeid(9), content: "fourt todo" },
-        { id: makeid(9), content: "fifth todo" },
-      ],
-    },
-    {
-      name: "in progres",
-      todos: [
-        { id: makeid(9), content: "first todo" },
-        { id: makeid(9), content: "second todo" },
-        { id: makeid(9), content: "third todo" },
-        { id: makeid(9), content: "fourt todo" },
-        { id: makeid(9), content: "fifth todo" },
-      ],
-    },
-  ],
+  allTodos: [],
 
   reorderTodos: action((state, payload) => {
     const { endIndex, startIndex, groupId } = payload;
@@ -219,9 +201,19 @@ const model: StoreModel = {
   setAllTodos: action((state, payload) => {
     state.allTodos = payload;
   }),
+
+  setWs: action((state, payload) => {
+    state.ws = payload;
+  }),
+
   updateData: thunk(async (actions, payload, helpers) => {
     const { type } = payload;
-
+    const { ws } = helpers.getState();
+    if (type == "addTodoGroup") {
+      ws?.send(JSON.stringify({ type }));
+    } else {
+      ws?.send(JSON.stringify({ type, payload: payload.payload }));
+    }
     switch (type) {
       case "addOrEditTodo":
         actions.addOrEditTodo(payload.payload);
