@@ -50,7 +50,6 @@ const Main = () => {
         }
 
         setAllTodos(allTodos);
-        setMetaData(metaData);
         return;
       }
       updaterThunk({ type, updateLocally: true, payload });
