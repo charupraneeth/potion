@@ -37,6 +37,10 @@ type SetMetaPayload = {
   content: string;
 };
 
+type RemoveGroupPayload = {
+  groupId: string;
+};
+
 type SetGroupNamePayload = {
   groupId: string;
   name: string;
@@ -81,7 +85,7 @@ type ThunkPayload =
     }
   | {
       type: "removeTodoGroup";
-      payload: string;
+      payload: RemoveGroupPayload;
     }
   | {
       type: "addTodoGroup";
@@ -99,7 +103,7 @@ export interface StoreModel {
   allTodos: GroupType[];
   setGroupName: Action<StoreModel, SetGroupNamePayload>;
   addTodoGroup: Action<StoreModel>;
-  removeTodoGroup: Action<StoreModel, string>;
+  removeTodoGroup: Action<StoreModel, RemoveGroupPayload>;
   setAllTodos: Action<StoreModel, GroupType[]>;
   updateData: Thunk<StoreModel, ThunkPayload>;
 }
@@ -187,7 +191,8 @@ const model: StoreModel = {
     state.allTodos.push({ name: "", todos: [] });
   }),
 
-  removeTodoGroup: action((state, groupId) => {
+  removeTodoGroup: action((state, payload) => {
+    const { groupId } = payload;
     console.log("removed group", groupId);
     state.allTodos = state.allTodos.filter(
       (_, index) => index != parseInt(groupId)

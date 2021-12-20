@@ -15,7 +15,10 @@ export const TodosHeader: React.FC<Props> = ({ groupName, groupId }) => {
   );
 
   function handleRemoveGroup() {
-    updaterThunk({ type: "removeTodoGroup", payload: String(groupId) });
+    updaterThunk({
+      type: "removeTodoGroup",
+      payload: { groupId: String(groupId) },
+    });
   }
 
   function handleAddTodo() {
