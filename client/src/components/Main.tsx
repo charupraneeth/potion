@@ -17,9 +17,17 @@ const Main = () => {
   const setMetaData = useStoreActions(
     (actions: Actions<StoreModel>) => actions.setMetaData
   );
+
   const setWs = useStoreActions(
     (actions: Actions<StoreModel>) => actions.setWs
   );
+
+  const updaterThunk = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.updateData
+  );
+
+  const selectedTodo = useStoreState((state: StoreModel) => state.selectedTodo);
+
   useEffect(() => {
     const socket = new WebSocket("ws://192.168.1.4:1337");
     socket.onopen = () => {
@@ -41,15 +49,11 @@ const Main = () => {
 
         setAllTodos(allTodos);
         setMetaData(metaData);
+        return;
       }
+      updaterThunk({ type, updateLocally: true, payload });
     };
   }, []);
-
-  const updaterThunk = useStoreActions(
-    (actions: Actions<StoreModel>) => actions.updateData
-  );
-
-  const selectedTodo = useStoreState((state: StoreModel) => state.selectedTodo);
 
   function handleDragEnd(result: DropResult) {
     console.log("drag ended");

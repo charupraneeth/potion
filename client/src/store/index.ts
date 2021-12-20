@@ -58,37 +58,46 @@ type ThunkPayload =
   | {
       type: "setMetaData";
       payload: SetMetaPayload;
+      updateLocally?: boolean;
     }
   | {
       type: "setSelectedTodo";
       payload: SetSelectedTodoPayload | null;
+      updateLocally?: boolean;
     }
   | {
       type: "reorderTodos";
       payload: ReorderPayload;
+      updateLocally?: boolean;
     }
   | {
       type: "moveTodos";
       payload: MovePayload;
+      updateLocally?: boolean;
     }
   | {
       type: "addOrEditTodo";
       payload: AddOrEditPayload;
+      updateLocally?: boolean;
     }
   | {
       type: "deleteTodo";
       payload: DeletePayload;
+      updateLocally?: boolean;
     }
   | {
       type: "setGroupName";
       payload: SetGroupNamePayload;
+      updateLocally?: boolean;
     }
   | {
       type: "removeTodoGroup";
       payload: RemoveGroupPayload;
+      updateLocally?: boolean;
     }
   | {
       type: "addTodoGroup";
+      updateLocally?: boolean;
     };
 
 export interface StoreModel {
@@ -150,6 +159,7 @@ const model: StoreModel = {
     const { groupId, todo, todoIndex } = payload;
     console.log(todoIndex, todo.id);
     if (todoIndex == null) {
+      // no todo index => add todo
       state.allTodos[parseInt(groupId)].todos.push(todo);
     } else {
       state.allTodos[parseInt(groupId)].todos[todoIndex] = todo;
@@ -207,16 +217,19 @@ const model: StoreModel = {
   }),
 
   updateData: thunk(async (actions, payload, helpers) => {
-    const { type } = payload;
+    const { type, updateLocally = false } = payload;
+
     const { ws } = helpers.getState();
-    if (type == "addTodoGroup") {
-      ws?.send(JSON.stringify({ type }));
-    } else {
-      ws?.send(JSON.stringify({ type, payload: payload.payload }));
+    if (!updateLocally && type !== "setSelectedTodo") {
+      if (type == "addTodoGroup") {
+        ws?.send(JSON.stringify({ type }));
+      } else {
+        ws?.send(JSON.stringify({ type, payload: payload.payload }));
+      }
     }
     switch (type) {
       case "addOrEditTodo":
-        actions.addOrEditTodo(payload.payload);
+        if (payload.payload.todo.id) actions.addOrEditTodo(payload.payload);
         break;
       case "deleteTodo":
         actions["deleteTodo"](payload.payload);

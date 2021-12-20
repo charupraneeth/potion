@@ -92,15 +92,13 @@ function moveTodos(payload: MovePayload) {
 }
 
 function addOrEditTodo(payload: AddOrEditPayload) {
-  const { groupId, content = "", todoIndex = null } = payload;
-  console.log(todoIndex, content);
-  const todo = {
-    id: nanoid(),
-    content,
-  };
-  if (todoIndex == null) {
+  const { groupId, todo, todoIndex = null } = payload;
+  console.log(todoIndex, todo);
+  if (todo.id === "" && todoIndex === null) {
+    todo.id = nanoid();
     allTodos[parseInt(groupId)].todos.push(todo);
   } else {
+    if (todoIndex === null) return;
     allTodos[parseInt(groupId)].todos[todoIndex] = todo;
   }
 }
@@ -180,8 +178,15 @@ wss.on("connection", function connection(ws) {
         break;
     }
     wss.clients.forEach((client) => {
-      if (client != ws && client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({ type, payload }));
+      if (client.readyState === WebSocket.OPEN) {
+        if (client != ws) {
+          client.send(JSON.stringify({ type, payload }));
+        } else {
+          if (type === "addOrEditTodo") {
+            console.log("sending to same client");
+            client.send(JSON.stringify({ type, payload }));
+          }
+        }
       }
     });
   });

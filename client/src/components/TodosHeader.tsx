@@ -25,7 +25,7 @@ export const TodosHeader: React.FC<Props> = ({ groupName, groupId }) => {
     updaterThunk({
       type: "addOrEditTodo",
       payload: {
-        todo: { content: "", id: makeid(10) },
+        todo: { content: "", id: "" },
         groupId: String(groupId),
         todoIndex: null,
       },
