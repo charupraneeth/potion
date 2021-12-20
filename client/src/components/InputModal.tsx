@@ -33,6 +33,7 @@ export const InputModal: React.FC = () => {
     updaterThunk({ type: "setSelectedTodo", payload: null });
   }
 
+  // TODO : implement throttling
   function handleInput(event: React.KeyboardEvent) {
     // @ts-ignore
     const updatedContent = event.target?.textContent;

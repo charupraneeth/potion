@@ -29,7 +29,9 @@ const Main = () => {
   const selectedTodo = useStoreState((state: StoreModel) => state.selectedTodo);
 
   useEffect(() => {
-    const socket = new WebSocket("ws://192.168.1.4:1337");
+    console.log(import.meta.env.VITE_SERVER_URL);
+
+    const socket = new WebSocket(import.meta.env.VITE_SERVER_URL);
     socket.onopen = () => {
       console.log("socket connected");
       setConnected(true);
