@@ -186,7 +186,9 @@ wss.on("connection", function connection(ws) {
     });
   });
 
-  ws.send(JSON.stringify(allTodos));
+  ws.send(
+    JSON.stringify({ type: "initialData", payload: { allTodos, metaData } })
+  );
 });
 
 server.listen(port, () => console.log(`listening at port : ${port}`));
