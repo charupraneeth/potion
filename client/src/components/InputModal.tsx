@@ -7,6 +7,8 @@ import { DeleteTodo } from "./DeleteTodo";
 export const InputModal: React.FC = () => {
   const contentEl = useRef(null);
   const selectedTodo = useStoreState((state: StoreModel) => state.selectedTodo);
+  let debounceTimer: number;
+  const debounceTimeout = 1000;
 
   const updaterThunk = useStoreActions(
     (actions: Actions<StoreModel>) => actions.updateData
@@ -44,8 +46,12 @@ export const InputModal: React.FC = () => {
     }
     const updated = selectedTodo;
     updated.todo.content = updatedContent;
-    updaterThunk({ type: "addOrEditTodo", payload: updated });
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      updaterThunk({ type: "addOrEditTodo", payload: updated });
+    }, debounceTimeout);
   }
+
   return (
     <div className="input-modal-overlay" onClick={handleOverlayClick}>
       <div className="input-modal">
