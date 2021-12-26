@@ -16,7 +16,11 @@ export const DeleteTodo: React.FC<Props> = ({ todoId, groupId }) => {
   function handleDelete(event: React.MouseEvent) {
     event.stopPropagation();
     updaterThunk({ type: "deleteTodo", payload: { groupId, todoId } });
-    updaterThunk({ type: "setSelectedTodo", payload: null });
+    updaterThunk({
+      type: "setSelectedTodo",
+      payload: null,
+      updateLocally: true,
+    });
   }
   return (
     <span className="delete-todo" onClick={handleDelete}>

@@ -179,14 +179,7 @@ wss.on("connection", function connection(ws) {
     }
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        if (client != ws) {
-          client.send(JSON.stringify({ type, payload }));
-        } else {
-          if (type === "addOrEditTodo") {
-            console.log("sending to same client");
-            client.send(JSON.stringify({ type, payload }));
-          }
-        }
+        client.send(JSON.stringify({ type, payload }));
       }
     });
   });

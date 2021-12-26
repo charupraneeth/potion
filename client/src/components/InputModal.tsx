@@ -32,7 +32,11 @@ export const InputModal: React.FC = () => {
     // @ts-ignore
     if (event.target.classList[0] !== "input-modal-overlay") return;
 
-    updaterThunk({ type: "setSelectedTodo", payload: null });
+    updaterThunk({
+      type: "setSelectedTodo",
+      payload: null,
+      updateLocally: true,
+    });
   }
 
   // TODO : implement throttling
