@@ -1,6 +1,6 @@
-import Title from "../components/Title";
-import TodosContainer from "../components/TodosContainer";
-import Description from "../components/Description";
+import Title from "./Title";
+import TodosContainer from "./TodosContainer";
+import Description from "./Description";
 
 import { StoreModel } from "../store";
 import { Actions, useStoreActions, useStoreState } from "easy-peasy";
