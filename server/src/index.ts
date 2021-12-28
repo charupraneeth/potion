@@ -216,9 +216,8 @@ function setMetaData(payload: SetMetaPayload) {
 
 function setGroupName(payload: SetGroupNamePayload) {
   const { groupId, name } = payload;
-  console.log("group name set");
-
-  allTodos[parseInt(groupId)].name = name;
+  console.log("group name set", name);
+  groups[groupId as GroupId].name = name;
 }
 
 wss.on("connection", function connection(ws) {
