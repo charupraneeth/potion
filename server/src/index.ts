@@ -184,9 +184,11 @@ function addOrEditTodo(payload: AddOrEditPayload) {
 function deleteTodo(payload: DeletePayload) {
   const { groupId, todoId } = payload;
   console.log("deleted", groupId, todoId);
-  const todos = allTodos[parseInt(groupId)]?.todos;
+  const { todos: todosClone } = groups[groupId as GroupId];
   if (!todos) return;
-  allTodos[parseInt(groupId)].todos = todos.filter((todo) => todo.id != todoId);
+
+  groups[groupId as GroupId].todos = todosClone.filter((id) => id != todoId);
+  delete todos[todoId as TodoId];
 }
 
 function addTodoGroup(payload: AddGroupPayload) {
