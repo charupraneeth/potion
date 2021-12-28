@@ -154,17 +154,17 @@ const model: StoreModel = {
 
   moveTodos: action((state, payload) => {
     const { destinationId, destinationIndex, sourceId, sourceIndex } = payload;
-    const sourceEntries = state.allTodos[parseInt(sourceId)].todos;
+    const sourceEntries = state.groups[sourceId].todos;
 
-    const destinationEntries = state.allTodos[parseInt(destinationId)].todos;
+    const destinationEntries = state.groups[destinationId].todos;
 
     const [removed] = sourceEntries.splice(sourceIndex, 1);
 
     destinationEntries.splice(destinationIndex, 0, removed);
     console.log("moved", removed);
 
-    state.allTodos[parseInt(sourceId)].todos = sourceEntries;
-    state.allTodos[parseInt(destinationId)].todos = destinationEntries;
+    state.groups[sourceId].todos = sourceEntries;
+    state.groups[destinationId].todos = destinationEntries;
   }),
 
   addOrEditTodo: action((state, payload) => {
