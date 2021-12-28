@@ -52,7 +52,12 @@ export const InputModal: React.FC = () => {
     updated.todo.content = updatedContent;
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
-      updaterThunk({ type: "addOrEditTodo", payload: updated });
+      const payload = {
+        groupId: updated.groupId,
+        todo: updated.todo,
+        pos: null,
+      };
+      updaterThunk({ type: "addOrEditTodo", payload });
     }, debounceTimeout);
   }
 

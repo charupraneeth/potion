@@ -18,7 +18,7 @@ type MovePayload = {
 type AddOrEditPayload = {
   todo: TodoType;
   groupId: string;
-  pos: "start" | "end";
+  pos: "start" | "end" | null;
 };
 
 type DeletePayload = {
