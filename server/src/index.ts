@@ -51,6 +51,7 @@ const server = createServer((req, res) => {
 
 const wss = new WebSocketServer({ server });
 
+type GroupId = keyof typeof groups;
 const metaData = {
   description: "This is the description",
   title: "This is the title",
@@ -189,7 +190,7 @@ function deleteTodo(payload: DeletePayload) {
 function addTodoGroup(payload: AddGroupPayload) {
   console.log("adding todo group");
   const id = nanoid();
-  groups[id as keyof typeof groups] = { id, name: "", todos: [] };
+  groups[id as GroupId] = { id, name: "", todos: [] };
   groupsOrder.push(id);
   payload.groupId = id;
   // allTodos.push({ name: "", todos: [] });
@@ -200,7 +201,7 @@ function removeTodoGroup(payload: RemoveGroupPayload) {
   console.log("removed group", groupId);
   if (groupId === null) return;
   groupsOrder = groupsOrder.filter((id) => id != groupId);
-  delete groups[groupId as keyof typeof groups];
+  delete groups[groupId as GroupId];
 }
 
 function setMetaData(payload: SetMetaPayload) {
@@ -268,7 +269,7 @@ wss.on("connection", function connection(ws) {
       type: "initialData",
       payload: {
         allTodos: groupsOrder.map((groupId) => {
-          const group = groups[groupId as keyof typeof groups];
+          const group = groups[groupId as GroupId];
           const groupClone = { ...group };
           // @ts-ignore
           groupClone.todos = groupClone.todos.map((todoId) => {
