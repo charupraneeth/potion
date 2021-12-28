@@ -29,7 +29,6 @@ type DeletePayload = {
 type SetSelectedTodoPayload = {
   todo: TodoType;
   groupId: string;
-  todoIndex: number;
 };
 
 type SetMetaPayload = {

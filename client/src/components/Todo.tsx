@@ -19,7 +19,7 @@ const Todo: React.FC<Props> = ({ todo, index, groupId }) => {
   function handleModal() {
     updaterThunk({
       type: "setSelectedTodo",
-      payload: { todo, groupId: String(groupId), todoIndex: index },
+      payload: { todo, groupId: groupId },
       updateLocally: true,
     });
   }
