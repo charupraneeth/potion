@@ -191,7 +191,7 @@ function addTodoGroup(payload: AddGroupPayload) {
   const id = nanoid();
   groups[id as keyof typeof groups] = { id, name: "", todos: [] };
   groupsOrder.push(id);
-  payload.id = id;
+  payload.groupId = id;
   // allTodos.push({ name: "", todos: [] });
 }
 

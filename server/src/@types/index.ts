@@ -27,7 +27,7 @@ export type DeletePayload = {
 };
 
 export type AddGroupPayload = {
-  id: string;
+  groupId: string;
 };
 
 export type SetSelectedTodoPayload = {
