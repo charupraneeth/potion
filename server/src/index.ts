@@ -52,6 +52,8 @@ const server = createServer((req, res) => {
 const wss = new WebSocketServer({ server });
 
 type GroupId = keyof typeof groups;
+type TodoId = keyof typeof todos;
+
 const metaData = {
   description: "This is the description",
   title: "This is the title",
@@ -272,7 +274,7 @@ wss.on("connection", function connection(ws) {
           const groupClone = { ...group };
           // @ts-ignore
           groupClone.todos = groupClone.todos.map((todoId) => {
-            return todos[todoId as keyof typeof todos];
+            return todos[todoId as TodoId];
           });
           return groupClone;
         }),
