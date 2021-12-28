@@ -11,8 +11,8 @@ import { useEffect, useState } from "react";
 const Main = () => {
   const [connected, setConnected] = useState(false);
 
-  const setAllTodos = useStoreActions(
-    (actions: Actions<StoreModel>) => actions.setAllTodos
+  const setMainData = useStoreActions(
+    (actions: Actions<StoreModel>) => actions.setMainData
   );
   const setMetaData = useStoreActions(
     (actions: Actions<StoreModel>) => actions.setMetaData
@@ -41,7 +41,7 @@ const Main = () => {
       console.log("msg recieved", msg.data);
       const { type, payload } = JSON.parse(msg.data);
       if (type === "initialData") {
-        const { allTodos, metaData } = payload;
+        const { groupsOrder, groups, todos, metaData } = payload;
         if (metaData?.title) {
           setMetaData({ type: "title", content: metaData.title });
         }
@@ -49,7 +49,7 @@ const Main = () => {
           setMetaData({ type: "description", content: metaData.description });
         }
 
-        setAllTodos(allTodos);
+        setMainData({ groupsOrder, groups, todos });
         return;
       }
       updaterThunk({ type, updateLocally: true, payload });

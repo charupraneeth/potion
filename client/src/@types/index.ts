@@ -3,6 +3,14 @@ export type TodoType = {
   content: string;
 };
 
-export interface TodoCollection {
+export interface GroupsCollection {
+  [groupId: string]: {
+    id: string;
+    name: string;
+    todos: string[];
+  };
+}
+
+export interface TodosCollection {
   [todoId: string]: TodoType;
 }

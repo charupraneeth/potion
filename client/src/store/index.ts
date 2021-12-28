@@ -1,6 +1,6 @@
 import { Action, action, createStore, persist, thunk, Thunk } from "easy-peasy";
 import "easy-peasy/map-set-support";
-import { TodoType } from "../@types";
+import { GroupsCollection, TodosCollection, TodoType } from "../@types";
 import { makeid } from "../utils";
 
 export type ReorderPayload = {
@@ -54,6 +54,13 @@ type MetaData = {
   title: string;
   description: string;
 };
+
+type MainDataPayload = {
+  groupsOrder: string[];
+  groups: GroupsCollection;
+  todos: TodosCollection;
+};
+
 type ThunkPayload =
   | {
       type: "setMetaData";
@@ -111,11 +118,14 @@ export interface StoreModel {
   moveTodos: Action<StoreModel, MovePayload>;
   addOrEditTodo: Action<StoreModel, AddOrEditPayload>;
   deleteTodo: Action<StoreModel, DeletePayload>;
+  groupsOrder: string[];
+  groups: GroupsCollection;
+  todos: TodosCollection;
   allTodos: GroupType[];
   setGroupName: Action<StoreModel, SetGroupNamePayload>;
   addTodoGroup: Action<StoreModel>;
   removeTodoGroup: Action<StoreModel, RemoveGroupPayload>;
-  setAllTodos: Action<StoreModel, GroupType[]>;
+  setMainData: Action<StoreModel, MainDataPayload>;
   updateData: Thunk<StoreModel, ThunkPayload>;
 }
 
@@ -126,18 +136,20 @@ const model: StoreModel = {
     description: "",
     title: "",
   },
-
+  todos: {},
+  groups: {},
+  groupsOrder: [],
   allTodos: [],
 
   reorderTodos: action((state, payload) => {
     const { endIndex, startIndex, groupId } = payload;
-    const todos = state.allTodos[parseInt(groupId)].todos;
+    const todos = state.groups[groupId].todos;
     const [removed] = todos.splice(startIndex, 1);
     todos.splice(endIndex, 0, removed);
 
     console.log("reordered", removed);
 
-    state.allTodos[parseInt(groupId)].todos = todos;
+    state.groups[groupId].todos = todos;
   }),
 
   moveTodos: action((state, payload) => {
@@ -208,8 +220,11 @@ const model: StoreModel = {
     state.allTodos[parseInt(groupId)].name = name;
   }),
 
-  setAllTodos: action((state, payload) => {
-    state.allTodos = payload;
+  setMainData: action((state, payload) => {
+    const { groups, groupsOrder, todos } = payload;
+    state.groups = groups;
+    state.groupsOrder = groupsOrder;
+    state.todos = todos;
   }),
 
   setWs: action((state, payload) => {

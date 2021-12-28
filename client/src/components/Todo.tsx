@@ -8,7 +8,7 @@ import { DeleteTodo } from "./DeleteTodo";
 interface Props {
   todo: TodoType;
   index: number;
-  groupId: number;
+  groupId: string;
 }
 
 const Todo: React.FC<Props> = ({ todo, index, groupId }) => {

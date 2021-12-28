@@ -271,15 +271,9 @@ wss.on("connection", function connection(ws) {
     JSON.stringify({
       type: "initialData",
       payload: {
-        allTodos: groupsOrder.map((groupId) => {
-          const group = groups[groupId as GroupId];
-          const groupClone = { ...group };
-          // @ts-ignore
-          groupClone.todos = groupClone.todos.map((todoId) => {
-            return todos[todoId as TodoId];
-          });
-          return groupClone;
-        }),
+        groupsOrder,
+        groups,
+        todos,
         metaData,
       },
     })

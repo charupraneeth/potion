@@ -7,7 +7,7 @@ import { makeid } from "../utils";
 
 interface Props {
   groupName: string;
-  groupId: number;
+  groupId: string;
 }
 export const TodosHeader: React.FC<Props> = ({ groupName, groupId }) => {
   const updaterThunk = useStoreActions(

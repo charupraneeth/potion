@@ -9,6 +9,9 @@ const TodosContainer = () => {
     (actions: Actions<StoreModel>) => actions.updateData
   );
   const allTodos = useStoreState((state: StoreModel) => state.allTodos);
+  const groupsOrder = useStoreState((state: StoreModel) => state.groupsOrder);
+  const groups = useStoreState((state: StoreModel) => state.groups);
+  const todos = useStoreState((state: StoreModel) => state.todos);
 
   function handleNewGroup() {
     updaterThunk({ type: "addTodoGroup" });
@@ -16,10 +19,11 @@ const TodosContainer = () => {
 
   return (
     <div className="all-todos-container">
-      {allTodos.map((group, index) => (
-        <Droppable droppableId={String(index)} key={index}>
+      {groupsOrder.map((groupId, index) => (
+        <Droppable droppableId={groupId} key={index}>
           {(provided) => {
-            const { name, todos } = group;
+            const group = groups[groupId];
+            const { name, todos: todosOrder } = group;
             return (
               <>
                 <div
@@ -27,15 +31,16 @@ const TodosContainer = () => {
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                 >
-                  <TodosHeader groupName={name} groupId={index} />
+                  <TodosHeader groupName={name} groupId={groupId} />
                   <div className="todos-wrap">
-                    {todos.map((todo, todoIndex) => {
+                    {todosOrder.map((todoId, todoIndex) => {
+                      const todo = todos[todoId];
                       return (
                         <Todo
                           key={todo.id}
                           todo={todo}
                           index={todoIndex}
-                          groupId={index}
+                          groupId={groupId}
                         />
                       );
                     })}
