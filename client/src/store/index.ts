@@ -224,7 +224,7 @@ const model: StoreModel = {
     const { groupId, name } = payload;
     console.log("group name set");
 
-    state.allTodos[parseInt(groupId)].name = name;
+    state.groups[groupId].name = name;
   }),
 
   setMainData: action((state, payload) => {

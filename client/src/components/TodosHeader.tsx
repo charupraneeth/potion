@@ -37,7 +37,7 @@ export const TodosHeader: React.FC<Props> = ({ groupName, groupId }) => {
     updaterThunk({
       type: "setGroupName",
       payload: {
-        groupId: String(groupId),
+        groupId,
         // @ts-ignore
         name: e.currentTarget.textContent,
       },
