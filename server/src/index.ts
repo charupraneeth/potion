@@ -236,7 +236,7 @@ wss.on("connection", function connection(ws) {
     console.log("received: ", JSON.parse(data.toString()));
     const { type = null, payload = null } = JSON.parse(data.toString());
     if (!type) return;
-    if (type !== "addTodoGroup" && !payload) return;
+    if (!payload) return;
     switch (type) {
       case "addOrEditTodo":
         addOrEditTodo(payload);

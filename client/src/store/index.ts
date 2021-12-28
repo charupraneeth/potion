@@ -54,6 +54,10 @@ type MetaData = {
   description: string;
 };
 
+type AddGroupPayload = {
+  groupId: string;
+};
+
 type MainDataPayload = {
   groupsOrder: string[];
   groups: GroupsCollection;
@@ -103,6 +107,7 @@ type ThunkPayload =
     }
   | {
       type: "addTodoGroup";
+      payload: AddGroupPayload;
       updateLocally?: boolean;
     };
 
@@ -122,7 +127,7 @@ export interface StoreModel {
   todos: TodosCollection;
   allTodos: GroupType[];
   setGroupName: Action<StoreModel, SetGroupNamePayload>;
-  addTodoGroup: Action<StoreModel>;
+  addTodoGroup: Action<StoreModel, AddGroupPayload>;
   removeTodoGroup: Action<StoreModel, RemoveGroupPayload>;
   setMainData: Action<StoreModel, MainDataPayload>;
   updateData: Thunk<StoreModel, ThunkPayload>;
@@ -191,8 +196,10 @@ const model: StoreModel = {
     delete state.todos[todoId];
   }),
 
-  addTodoGroup: action((state) => {
-    state.allTodos.push({ name: "", todos: [] });
+  addTodoGroup: action((state, payload) => {
+    const { groupId } = payload;
+    state.groupsOrder.push(groupId);
+    state.groups[groupId] = { id: groupId, name: "", todos: [] };
   }),
 
   removeTodoGroup: action((state, payload) => {
@@ -236,12 +243,10 @@ const model: StoreModel = {
 
     const { ws } = helpers.getState();
     if (!updateLocally && type !== "setSelectedTodo") {
-      if (type == "addTodoGroup") {
-        ws?.send(JSON.stringify({ type }));
-      } else {
-        ws?.send(JSON.stringify({ type, payload: payload.payload }));
-      }
+      // send updates to server
+      ws?.send(JSON.stringify({ type, payload: payload.payload }));
     } else {
+      // update locally
       switch (type) {
         case "addOrEditTodo":
           if (payload.payload.todo.id) actions.addOrEditTodo(payload.payload);
@@ -268,7 +273,7 @@ const model: StoreModel = {
           actions["removeTodoGroup"](payload.payload);
           break;
         case "addTodoGroup":
-          actions["addTodoGroup"]();
+          actions["addTodoGroup"](payload.payload);
           break;
       }
     }

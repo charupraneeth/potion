@@ -14,7 +14,7 @@ const TodosContainer = () => {
   const todos = useStoreState((state: StoreModel) => state.todos);
 
   function handleNewGroup() {
-    updaterThunk({ type: "addTodoGroup" });
+    updaterThunk({ type: "addTodoGroup", payload: { groupId: "" } });
   }
 
   return (
