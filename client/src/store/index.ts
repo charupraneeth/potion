@@ -18,7 +18,7 @@ type MovePayload = {
 type AddOrEditPayload = {
   todo: TodoType;
   groupId: string;
-  todoIndex: number | null;
+  pos: "start" | "end";
 };
 
 type DeletePayload = {
@@ -167,14 +167,16 @@ const model: StoreModel = {
   }),
 
   addOrEditTodo: action((state, payload) => {
-    const { groupId, todo, todoIndex } = payload;
-    console.log(todoIndex, todo.id);
-    if (todoIndex == null) {
-      // no todo index => add todo
-      state.allTodos[parseInt(groupId)].todos.push(todo);
-    } else {
-      state.allTodos[parseInt(groupId)].todos[todoIndex] = todo;
+    const { groupId, todo, pos = null } = payload;
+    console.log("todo", todo.id);
+
+    if (pos == "end") {
+      state.groups[groupId].todos.push(todo.id);
+    } else if (pos === "start") {
+      state.groups[groupId].todos.unshift(todo.id);
     }
+    // add all todos with pos: end/start/null to the collection
+    state.todos[todo.id] = todo;
   }),
 
   setSelectedTodo: action((state, payload) => {

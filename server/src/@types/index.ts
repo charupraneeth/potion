@@ -18,7 +18,7 @@ export type MovePayload = {
 export type AddOrEditPayload = {
   todo: TodoType;
   groupId: string;
-  todoIndex: number | null;
+  pos: "start" | "end";
 };
 
 export type DeletePayload = {

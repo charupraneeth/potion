@@ -26,8 +26,8 @@ export const TodosHeader: React.FC<Props> = ({ groupName, groupId }) => {
       type: "addOrEditTodo",
       payload: {
         todo: { content: "", id: "" },
-        groupId: String(groupId),
-        todoIndex: null,
+        groupId: groupId,
+        pos: "start",
       },
     });
   }

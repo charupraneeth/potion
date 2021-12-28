@@ -168,13 +168,16 @@ function moveTodos(payload: MovePayload) {
 }
 
 function addOrEditTodo(payload: AddOrEditPayload) {
-  const { groupId, todo, todoIndex = null } = payload;
-  console.log(todoIndex, todo);
-  if (todo.id === "" && todoIndex === null) {
+  const { groupId, todo, pos = null } = payload;
+  console.log("edit todo", todo, pos);
+  if (todo.id === "") {
     const id = nanoid();
     payload.todo.id = id;
-
-    groups[groupId as GroupId].todos.push(id);
+    if (pos === "start") {
+      groups[groupId as GroupId].todos.push(id);
+    } else if (pos === "end") {
+      groups[groupId as GroupId].todos.unshift(id);
+    }
     todos[id as TodoId] = { content: "", id };
   } else {
     todos[todo.id as TodoId] = todo;
