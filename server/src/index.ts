@@ -199,7 +199,8 @@ function removeTodoGroup(payload: RemoveGroupPayload) {
   const { groupId = null } = payload;
   console.log("removed group", groupId);
   if (groupId === null) return;
-  allTodos = allTodos.filter((_, index) => index != parseInt(groupId));
+  groupsOrder = groupsOrder.filter((id) => id != groupId);
+  delete groups[groupId as keyof typeof groups];
 }
 
 function setMetaData(payload: SetMetaPayload) {
