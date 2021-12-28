@@ -205,9 +205,9 @@ const model: StoreModel = {
   removeTodoGroup: action((state, payload) => {
     const { groupId } = payload;
     console.log("removed group", groupId);
-    state.allTodos = state.allTodos.filter(
-      (_, index) => index != parseInt(groupId)
-    );
+
+    state.groupsOrder = state.groupsOrder.filter((id) => id !== groupId);
+    delete state.groups[groupId];
   }),
 
   setMetaData: action((state, payload) => {
