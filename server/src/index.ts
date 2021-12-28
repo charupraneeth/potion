@@ -20,8 +20,6 @@ const port = process.env.PORT || 1337;
 
 function handleRequest(req: IncomingMessage, res: ServerResponse) {
   if (req.method == "GET") {
-    console.log("get");
-
     if (!req.url) return;
     const { pathname } = parse(req.url);
     if (pathname === "/alltodos") {
@@ -145,28 +143,28 @@ let allTodos = [
 
 function reorderTodos(payload: ReorderPayload) {
   const { endIndex, startIndex, groupId } = payload;
-  const todos = allTodos[parseInt(groupId)].todos;
+  const todos = groups[groupId as GroupId].todos;
   const [removed] = todos.splice(startIndex, 1);
   todos.splice(endIndex, 0, removed);
 
   console.log("reordered", removed);
 
-  allTodos[parseInt(groupId)].todos = todos;
+  groups[groupId as GroupId].todos = todos;
 }
 
 function moveTodos(payload: MovePayload) {
   const { destinationId, destinationIndex, sourceId, sourceIndex } = payload;
-  const sourceEntries = allTodos[parseInt(sourceId)].todos;
+  const sourceEntries = groups[sourceId as GroupId].todos;
 
-  const destinationEntries = allTodos[parseInt(destinationId)].todos;
+  const destinationEntries = groups[destinationId as GroupId].todos;
 
   const [removed] = sourceEntries.splice(sourceIndex, 1);
 
   destinationEntries.splice(destinationIndex, 0, removed);
   console.log("moved", removed);
 
-  allTodos[parseInt(sourceId)].todos = sourceEntries;
-  allTodos[parseInt(destinationId)].todos = destinationEntries;
+  groups[sourceId as GroupId].todos = sourceEntries;
+  groups[destinationId as GroupId].todos = destinationEntries;
 }
 
 function addOrEditTodo(payload: AddOrEditPayload) {
