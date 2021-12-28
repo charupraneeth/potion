@@ -12,16 +12,29 @@ import {
   ReorderPayload,
   SetGroupNamePayload,
   SetMetaPayload,
+  TodoType,
 } from "./@types";
 
 const port = process.env.PORT || 1337;
 
 function handleRequest(req: IncomingMessage, res: ServerResponse) {
   if (req.method == "GET") {
+    console.log("get");
+
     if (!req.url) return;
     const { pathname } = parse(req.url);
     if (pathname === "/alltodos") {
       res.setHeader("Content-Type", "application/json;charset=utf-8");
+      const allTodos = groupsOrder.map((groupId) => {
+        const group = groups[groupId as keyof typeof groups];
+        const groupClone = { ...group };
+        // @ts-ignore
+        groupClone.todos = groupClone.todos.map((todoId) => {
+          return todos[todoId as keyof typeof todos];
+        });
+
+        return groupClone;
+      });
       return res.end(JSON.stringify(allTodos));
     }
     if (pathname === "/metadata") {
@@ -40,6 +53,67 @@ const wss = new WebSocketServer({ server });
 const metaData = {
   description: "This is the description",
   title: "This is the title",
+};
+
+let groups = {
+  QBx4CSb7cB5f0sgpRSDT_: {
+    id: "QBx4CSb7cB5f0sgpRSDT_",
+    name: "completed",
+    todos: [
+      "QBx4CSb7c8OD0sgpRSDT_",
+      "k3vuaSR36t_e46KPfgkxC",
+      "T2pb6shvPaCgJDkaowwEQ",
+      "UdkGGwm0_lQGbQ5W2M3tr",
+      "ZEZ235mIOAb_ejhslSb3j",
+    ],
+  },
+  SwnoEqMHeRa34J0XBieTLs: {
+    id: "SwnoEqMHeRa34J0XBieTLs",
+    name: "in progres",
+    todos: [
+      "SwnoEqMHElzvJ0XBieTLs",
+      "bnaCbDP-stWEImXRSugEp",
+      "-56Ocs46d8nvGWcuoyEar",
+      "b8jr-Z8WQmove7xQ1MJ_j",
+      "qdV5bG2OWM5Q-t95MuJkO",
+    ],
+  },
+};
+
+let groupsOrder = ["QBx4CSb7cB5f0sgpRSDT_", "SwnoEqMHeRa34J0XBieTLs"];
+
+let todos = {
+  QBx4CSb7c8OD0sgpRSDT_: { id: "QBx4CSb7c8OD0sgpRSDT_", content: "first todo" },
+  k3vuaSR36t_e46KPfgkxC: {
+    id: "k3vuaSR36t_e46KPfgkxC",
+    content: "second todo",
+  },
+  T2pb6shvPaCgJDkaowwEQ: {
+    id: "T2pb6shvPaCgJDkaowwEQ",
+    content: "third todo",
+  },
+  UdkGGwm0_lQGbQ5W2M3tr: {
+    id: "UdkGGwm0_lQGbQ5W2M3tr",
+    content: "fourt todo",
+  },
+  ZEZ235mIOAb_ejhslSb3j: { id: "ZEZ235mIOAb_ejhslSb3j", content: "fifth todo" },
+  SwnoEqMHElzvJ0XBieTLs: { id: "SwnoEqMHElzvJ0XBieTLs", content: "sixth todo" },
+  "bnaCbDP-stWEImXRSugEp": {
+    id: "bnaCbDP-stWEImXRSugEp",
+    content: "seventh todo",
+  },
+  "-56Ocs46d8nvGWcuoyEar": {
+    id: "-56Ocs46d8nvGWcuoyEar",
+    content: "eight todo",
+  },
+  "b8jr-Z8WQmove7xQ1MJ_j": {
+    id: "b8jr-Z8WQmove7xQ1MJ_j",
+    content: "nineth todo",
+  },
+  "qdV5bG2OWM5Q-t95MuJkO": {
+    id: "qdV5bG2OWM5Q-t95MuJkO",
+    content: "tenth todo",
+  },
 };
 
 let allTodos = [
@@ -113,8 +187,11 @@ function deleteTodo(payload: DeletePayload) {
 
 function addTodoGroup() {
   console.log("adding todo group");
+  const id = nanoid();
+  groups[id as keyof typeof groups] = { id, name: "", todos: [] };
+  groupsOrder.push(id);
 
-  allTodos.push({ name: "", todos: [] });
+  // allTodos.push({ name: "", todos: [] });
 }
 
 function removeTodoGroup(payload: RemoveGroupPayload) {
@@ -185,7 +262,21 @@ wss.on("connection", function connection(ws) {
   });
 
   ws.send(
-    JSON.stringify({ type: "initialData", payload: { allTodos, metaData } })
+    JSON.stringify({
+      type: "initialData",
+      payload: {
+        allTodos: groupsOrder.map((groupId) => {
+          const group = groups[groupId as keyof typeof groups];
+          const groupClone = { ...group };
+          // @ts-ignore
+          groupClone.todos = groupClone.todos.map((todoId) => {
+            return todos[todoId as keyof typeof todos];
+          });
+          return groupClone;
+        }),
+        metaData,
+      },
+    })
   );
 });
 
