@@ -173,11 +173,13 @@ function addOrEditTodo(payload: AddOrEditPayload) {
   const { groupId, todo, todoIndex = null } = payload;
   console.log(todoIndex, todo);
   if (todo.id === "" && todoIndex === null) {
-    todo.id = nanoid();
-    allTodos[parseInt(groupId)].todos.push(todo);
+    const id = nanoid();
+    payload.todo.id = id;
+
+    groups[groupId as GroupId].todos.push(id);
+    todos[id as TodoId] = { content: "", id };
   } else {
-    if (todoIndex === null) return;
-    allTodos[parseInt(groupId)].todos[todoIndex] = todo;
+    todos[todo.id as TodoId] = todo;
   }
 }
 
