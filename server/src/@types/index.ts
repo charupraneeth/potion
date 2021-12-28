@@ -26,6 +26,10 @@ export type DeletePayload = {
   groupId: string;
 };
 
+export type AddGroupPayload = {
+  id: string;
+};
+
 export type SetSelectedTodoPayload = {
   todo: TodoType;
   groupId: string;

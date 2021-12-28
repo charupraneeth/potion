@@ -5,6 +5,7 @@ import { nanoid } from "nanoid";
 import { parse } from "url";
 
 import {
+  AddGroupPayload,
   AddOrEditPayload,
   DeletePayload,
   MovePayload,
@@ -185,12 +186,12 @@ function deleteTodo(payload: DeletePayload) {
   allTodos[parseInt(groupId)].todos = todos.filter((todo) => todo.id != todoId);
 }
 
-function addTodoGroup() {
+function addTodoGroup(payload: AddGroupPayload) {
   console.log("adding todo group");
   const id = nanoid();
   groups[id as keyof typeof groups] = { id, name: "", todos: [] };
   groupsOrder.push(id);
-
+  payload.id = id;
   // allTodos.push({ name: "", todos: [] });
 }
 
@@ -251,7 +252,7 @@ wss.on("connection", function connection(ws) {
         removeTodoGroup(payload);
         break;
       case "addTodoGroup":
-        addTodoGroup();
+        addTodoGroup(payload);
         break;
     }
     wss.clients.forEach((client) => {
