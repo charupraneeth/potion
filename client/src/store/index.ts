@@ -186,10 +186,9 @@ const model: StoreModel = {
   deleteTodo: action((state, payload) => {
     console.log("deleted");
     const { groupId, todoId } = payload;
-    const todos = state.allTodos[parseInt(groupId)].todos;
-    state.allTodos[parseInt(groupId)].todos = todos.filter(
-      (todo) => todo.id != todoId
-    );
+    const todos = state.groups[groupId].todos;
+    state.groups[groupId].todos = todos.filter((id) => id != todoId);
+    delete state.todos[todoId];
   }),
 
   addTodoGroup: action((state) => {
