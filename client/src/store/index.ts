@@ -245,37 +245,39 @@ const model: StoreModel = {
     if (!updateLocally && type !== "setSelectedTodo") {
       // send updates to server
       ws?.send(JSON.stringify({ type, payload: payload.payload }));
-    } else {
-      // update locally
-      switch (type) {
-        case "addOrEditTodo":
-          if (payload.payload.todo.id) actions.addOrEditTodo(payload.payload);
-          break;
-        case "deleteTodo":
-          actions["deleteTodo"](payload.payload);
-          break;
-        case "reorderTodos":
-          actions["reorderTodos"](payload.payload);
-          break;
-        case "moveTodos":
-          actions["moveTodos"](payload.payload);
-          break;
-        case "setGroupName":
-          actions["setGroupName"](payload.payload);
-          break;
-        case "setMetaData":
-          actions["setMetaData"](payload.payload);
-          break;
-        case "setSelectedTodo":
-          actions["setSelectedTodo"](payload.payload);
-          break;
-        case "removeTodoGroup":
-          actions["removeTodoGroup"](payload.payload);
-          break;
-        case "addTodoGroup":
-          actions["addTodoGroup"](payload.payload);
-          break;
+      if (type !== "moveTodos" && type !== "reorderTodos") {
+        return;
       }
+    }
+    // update locally
+    switch (type) {
+      case "addOrEditTodo":
+        if (payload.payload.todo.id) actions.addOrEditTodo(payload.payload);
+        break;
+      case "deleteTodo":
+        actions["deleteTodo"](payload.payload);
+        break;
+      case "reorderTodos":
+        actions["reorderTodos"](payload.payload);
+        break;
+      case "moveTodos":
+        actions["moveTodos"](payload.payload);
+        break;
+      case "setGroupName":
+        actions["setGroupName"](payload.payload);
+        break;
+      case "setMetaData":
+        actions["setMetaData"](payload.payload);
+        break;
+      case "setSelectedTodo":
+        actions["setSelectedTodo"](payload.payload);
+        break;
+      case "removeTodoGroup":
+        actions["removeTodoGroup"](payload.payload);
+        break;
+      case "addTodoGroup":
+        actions["addTodoGroup"](payload.payload);
+        break;
     }
   }),
 };

@@ -265,6 +265,9 @@ wss.on("connection", function connection(ws) {
     }
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
+        if (type === "moveTodos" || type === "reorderTodos") {
+          if (client == ws) return;
+        }
         client.send(JSON.stringify({ type, payload }));
       }
     });
