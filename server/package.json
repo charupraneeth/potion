@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "nodemon --watch ./src/**/*.ts --exec npx ts-node src/index.ts",
-    "build": "npx tsc -p ."
+    "build": "npx tsc -p .",
+    "pm2": "npm run build && npm start"
   },
   "keywords": [],
   "author": "",
