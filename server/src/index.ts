@@ -1,6 +1,7 @@
 import { WebSocketServer, WebSocket } from "ws";
 import { createServer, IncomingMessage, ServerResponse } from "http";
 import { nanoid } from "nanoid";
+import { config } from "dotenv";
 
 import { parse } from "url";
 
@@ -16,6 +17,7 @@ import {
   TodoType,
 } from "./@types";
 
+config();
 const port = process.env.PORT || 1337;
 
 function handleRequest(req: IncomingMessage, res: ServerResponse) {
